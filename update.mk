@@ -9,5 +9,6 @@ updateApt:
 
 updateNode:
 	sudo npm -g install n; \
+	sudo npm -g update;
 	sudo n stable
 
