@@ -1,18 +1,15 @@
-test-diff-mk: left.txt right.txt
-	$(call enter)
-	$(call yellow, left.txt)
-	@cat left.txt
-	$(call yellow, right.txt)
-	@cat right.txt
-	$(call yellow,showing lines only in right.txt)
+help: left.txt right.txt
+	@echo This is the help target in diff.mk.
+	cat left.txt
+	cat right.txt
+	@echo calling diffOnlyInRight ...
 	$(call diffOnlyInRight, $(word 1,$^), $(word 2,$^)) 
-	$(call yellow,showing lines only in left.txt)
+	@echo
+	@echo calling diffOnlyInLeft ...
 	$(call diffOnlyInLeft, $(word 1,$^), $(word 2,$^)) 
-	$(call yellow,showing lines in both left.txt and right.txt)
+	@echo
+	@echo calling diffInBoth ...
 	$(call diffInBoth, $(word 1,$^), $(word 2,$^)) 
-	$(call leave)
-
-include color.mk
 
 left.txt:
 	echo -e one\nthree\nleft\nfour\nfive\nsix\nnine\nten >$@

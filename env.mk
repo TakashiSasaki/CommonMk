@@ -1,3 +1,14 @@
+help:
+	@echo This is help target in env.mk.
+	@echo Including env.mk provides the following variables.
+	@echo ROOT=$(ROOT)
+	@echo USER=$(USER)
+	@echo HOST=$(HOST)
+	@echo URI=$(URI)
+	@echo URIMD5=$(URIMD5)
+	@echo OUTDIR=$(OUTDIR)
+	@echo MAKE_HOST=$(MAKE_HOST)
+
 ifndef ROOT
   ifdef HOME
     ROOT=$(HOME)
