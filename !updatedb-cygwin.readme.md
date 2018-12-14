@@ -1,0 +1,1 @@
+run updatedb on Cygwin of MobaXterm
