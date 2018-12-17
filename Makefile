@@ -4,55 +4,45 @@ CODE=/usr/libexec/bigram
 UPDATEDB=/usr/bin/updatedb
 
 all: \
-	filelist.slocate.txt filelist.locate02.txt filelist.old.txt \
-	filelist.slocate.updatedb filelist.locate02.updatedb filelist.old.updatedb
+	old/homemade.txt slocate/homemade.txt LOCATE02/homemade.txt \
+	old/updatedb.txt slocate/updatedb.txt LOCATE02/updatedb.txt
 
 clean:
 	-rm -f filelist
-	-rm filelist*.txt
-	-rm filelist*.updatedb
-	-rm filelist*.bigram
-	-rm filelist*.locate02
-	-rm filelist*.trsorttr
-	-rm filelist*.old
-	-rm filelist*.slocate
+	-rm -rf old/ slocate/ LOCATE02/
 
 filelist:
 	./cat-filelist >$@
 	if [ ! -s $@ ];then rm $@; exit 1; fi
 
-filelist.slocate: filelist
+slocate/handmade.db: filelist
+	-mkdir slocate
 	cat $< | sort -f | ${FRCODE} -S 1 > $@
 
-filelist.locate02: filelist
+LOCATE02/homemade.db: filelist
+	-mkdir locate02
 	cat $< | sort -f | ${FRCODE} > $@
 
-filelist.trsorttr: filelist
+old/sorted: filelist
 	cat $< | tr / '\001' | sort -f | tr '\001' / > $@
 	if [ ! -s $@ ];then  rm $@; exit 1; fi
 
-filelist.bigram: filelist.trsorttr
+old/bigram: old/sorted
 	${BIGRAM} < $< | sort | uniq -c | sort -nr | awk '{ if (NR <= 128) print $2 }' | tr -d '\012' > $@
 
-filelist.old: filelist.bigram
+old/homemade.db: old/bigram
 	${CODE} $< < ${basename $@} > $@
 	if [ ! -s $@ ];then  rm $@; exit 1; fi
 
-filelist.slocate.txt:  filelist.slocate
-	locate -d $< nig
+old/updatedb.db: cat-filelist
+	sh -c '(find="`pwd`/$<" ;source ${UPDATEDB} --output=$@ --dbformat=old)'
 
-filelist.locate02.txt:  filelist.locate02
-	locate -d $< nig
+slocate/updatedb.db: filelist
+	sh -c '(find="`pwd`/$<" ;source ${UPDATEDB} --output=$@ --dbformat=slocate)'
 
-filelist.old.txt:  filelist.old
-	locate -d $< nig
+LOCATE02/updatedb.db: filelist
+	sh -c '(find="`pwd`/$<" ;source ${UPDATEDB} --output=$@ --dbformat=LOCATE02)'
 
-filelist.old.updatedb: filelist
-	sh -c '(find="`pwd`/cat-filelist" ;source ${UPDATEDB} --output=$@ --dbformat=old)'
-
-filelist.slocate.updatedb: filelist
-	sh -c '(find="`pwd`/cat-filelist" ;source ${UPDATEDB} --output=$@ --dbformat=slocate)'
-
-filelist.locate02.updatedb: filelist
-	sh -c '(find="`pwd`/cat-filelist" ;source ${UPDATEDB} --output=$@ --dbformat=LOCATE02)'
+%.txt: %.db
+	locate -d $< nig >$@
 
