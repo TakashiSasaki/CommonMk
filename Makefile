@@ -9,10 +9,17 @@ all: \
 
 clean:
 	-rm -f filelist
-	-rm filelist.*.txt
+	-rm filelist*.txt
+	-rm filelist*.updatedb
+	-rm filelist*.bigram
+	-rm filelist*.locate02
+	-rm filelist*.trsorttr
+	-rm filelist*.old
+	-rm filelist*.slocate
 
 filelist:
 	./cat-filelist >$@
+	if [ ! -s 0 ];then  rm $@; exit 1; fi
 
 filelist.slocate: filelist
 	cat $< | sort -f | ${FRCODE} -S 1 > $@
@@ -20,14 +27,16 @@ filelist.slocate: filelist
 filelist.locate02: filelist
 	cat $< | sort -f | ${FRCODE} > $@
 
-filelist.tr-sort-tr: filelist
+filelist.trsorttr: filelist
 	cat $< | tr / '\001' | sort -f | tr '\001' / > $@
+	if [ ! -s 0 ];then  rm $@; exit 1; fi
 
 filelist.bigram: filelist.tr-sort-tr
 	${BIGRAM} < $< | sort | uniq -c | sort -nr | awk '{ if (NR <= 128) print $2 }' | tr -d '\012' > $@
 
 filelist.old: filelist.bigram
 	${CODE} $< < ${basename $@} > $@
+	if [ ! -s 0 ];then  rm $@; exit 1; fi
 
 filelist.slocate.txt:  filelist.slocate
 	locate -d $< nig
