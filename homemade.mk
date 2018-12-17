@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 .PHONY: all clean slocate LOCATE02 old
 .SUFFIXES: .db .txt
 FRCODE=/usr/libexec/frcode
