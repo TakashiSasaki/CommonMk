@@ -1,24 +1,29 @@
+.PHONY: all clean slocate LOCATE02 old
 .SUFFIXES: .db .txt
 FRCODE=/usr/libexec/frcode
 BIGRAM=/usr/libexec/bigram
 CODE=/usr/libexec/code
 UPDATEDB=/usr/bin/updatedb
 
-all: \
-	old/homemade.txt slocate/homemade.txt LOCATE02/homemade.txt \
-	old/updatedb.txt slocate/updatedb.txt LOCATE02/updatedb.txt
+all: slocate LOCATE02 old 
 
 clean:
 	-rm -f filelist
 	-rm -rf old/ slocate/ LOCATE02/
 
+slocate: slocate/homemade.txt slocate/updatedb.txt
+	-mkdir slocate/
+
 slocate/homemade.db: 
 	-mkdir slocate/
-	./cat-filelist | sort -f | ${FRCODE} -S 1 > $@
+	./cat-filelist-0 | sort -z -f | ${FRCODE} -0 -S 1 > $@
 
 slocate/updatedb.db: 
 	-mkdir slocate/
-	sh -c '(find="`pwd`/cat-filelist" ;source ${UPDATEDB} --output=$@ --dbformat=slocate)'
+	sh -c '(find="`pwd`/cat-filelist-0" ;source ${UPDATEDB} --output=$@ --dbformat=slocate)'
+
+LOCATE02: LOCATE02/homemade.txt LOCATE02/updatedb.db
+	-mkdir LOCATE02/
 
 LOCATE02/homemade.db: 
 	-mkdir LOCATE02/
@@ -27,6 +32,9 @@ LOCATE02/homemade.db:
 LOCATE02/updatedb.db: 
 	-mkdir LOCATE02/
 	sh -c '(find="`pwd`/cat-filelist-0" ;source ${UPDATEDB} --output=$@ --dbformat=LOCATE02)'
+
+old: old/homemade.txt old/updatedb.txt
+	-mkdir old/
 
 old/sorted: 
 	-mkdir old/
