@@ -1,0 +1,15 @@
+#!/bin/sh
+echo "abc" 
+echo "hello" 
+echo "good night" 
+echo "Good Morning" 
+echo "/x/y/z" 
+echo "/a/b/c" 
+echo "Monday" 
+echo "Tuesday"
+echo "Wednesday" 
+echo "Thurseday" 
+echo "Friday" 
+echo "Saturday" 
+echo "Sunday" 
+
