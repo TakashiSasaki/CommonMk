@@ -19,7 +19,7 @@ clean:
 
 filelist:
 	./cat-filelist >$@
-	if [ ! -s 0 ];then  rm $@; exit 1; fi
+	if [ ! -s $@ ];then rm $@; exit 1; fi
 
 filelist.slocate: filelist
 	cat $< | sort -f | ${FRCODE} -S 1 > $@
@@ -29,14 +29,14 @@ filelist.locate02: filelist
 
 filelist.trsorttr: filelist
 	cat $< | tr / '\001' | sort -f | tr '\001' / > $@
-	if [ ! -s 0 ];then  rm $@; exit 1; fi
+	if [ ! -s $@ ];then  rm $@; exit 1; fi
 
-filelist.bigram: filelist.tr-sort-tr
+filelist.bigram: filelist.trsorttr
 	${BIGRAM} < $< | sort | uniq -c | sort -nr | awk '{ if (NR <= 128) print $2 }' | tr -d '\012' > $@
 
 filelist.old: filelist.bigram
 	${CODE} $< < ${basename $@} > $@
-	if [ ! -s 0 ];then  rm $@; exit 1; fi
+	if [ ! -s $@ ];then  rm $@; exit 1; fi
 
 filelist.slocate.txt:  filelist.slocate
 	locate -d $< nig

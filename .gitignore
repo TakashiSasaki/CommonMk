@@ -1,2 +1,10 @@
 .Makefile.swp
 filelist
+filelist.bigram
+filelist.locate02
+filelist.old
+filelist.slocate
+filelist.locate02.updatedb
+filelist.old.updatedb
+filelist.trsorttr
+filelist.slocate.updatedb
