@@ -1,0 +1,2 @@
+#!/bin/sh
+./cat-filelist | tr '\n' '\0'
