@@ -1,7 +1,7 @@
 .SUFFIXES: .db .txt
 FRCODE=/usr/libexec/frcode
 BIGRAM=/usr/libexec/bigram
-CODE=/usr/libexec/bigram
+CODE=/usr/libexec/code
 UPDATEDB=/usr/bin/updatedb
 
 all: \
@@ -34,11 +34,11 @@ old/sorted:
 	if [ ! -s $@ ];then  rm $@; exit 1; fi
 
 old/bigram: old/sorted
-	${BIGRAM} < $< | sort | uniq -c | sort -nr | awk '{ if (NR <= 128) print $2 }' | tr -d '\012' > $@
+	cat $< | ${BIGRAM} | sort | uniq -c | sort -nr | awk '{ if (NR <= 128) print $2 }' | tr -d '\012' > $@
 
 old/homemade.db: old/bigram
-	./cat-filelist | ${CODE} $<  > $@
-	if [ ! -s $@ ];then  rm $@; exit 1; fi
+	./cat-filelist | ${CODE} $< > $@
+	if [ ! -s $@ ];then rm $@; exit 1; fi
 
 old/updatedb.db: 
 	-mkdir old/
