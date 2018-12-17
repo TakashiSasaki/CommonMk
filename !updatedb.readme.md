@@ -10,5 +10,5 @@ Without appropreate `PRUNEPATHS`,
 `updatedb` runs forever because of unexpected cyclic recursion.
 
 ```
-git clone --depth 1 git@gist.github.com:20a4d99160f824080c710c59fcfb6b3d.git updatedb-homemade
+git clone --depth 1 git@gist.github.com:20a4d99160f824080c710c59fcfb6b3d.git updatedb-playground
 ```
