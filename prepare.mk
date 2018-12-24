@@ -8,5 +8,7 @@ help:
 	sudo apt upgrade -y
 	sudo apt autoremove -y
 	sudo n stable
-	sudo npm -g install
+	sudo npm install -g npm
+	sudo npm -g update
+
 
