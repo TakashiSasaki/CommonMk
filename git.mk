@@ -1,12 +1,15 @@
+.PHONY: git-show-ignored git-fetch-from all.githash 
 
-git-rev-parse-all.githash:
-	unset GIT_DIR; \
-	       	git rev-parse --all | uniq | tee $@
+ifdef GIT_DIR
+$(error Environment variable GIT_DIR may cause unexpected result.)
+endif
+
+all.githash:
+	git rev-parse --all | sort -u | tee $@
 	test -s $@
 
-git-ls-tree.txt: git-rev-parse-all.githash
-	unset GIT_DIR; \
-	cat $< | xargs -n 1 git -C ls-tree | tee  $@
+%.lstree: %.githash
+	cat $< | xargs -n 1 git ls-tree -l -r --full-tree| tee  $@
 	test -s $@
 
 git-config:
@@ -20,5 +23,14 @@ git-config:
 	git config pager.diff ""
 	git config pager.reflog ""
 
-git-check-attr:
-	find . | git check-attr --stdin -a
+git-check-attr-at:
+	read -e -p "check attributes at : " DIRECTORY ;\
+	find "$${DIRECTORY}" | git check-attr --stdin -a
+
+git-show-ignored:
+	git status --ignored
+
+git-fetch-from:
+	read -e -p "fetch from : " DIRECTORY ; \
+	git fetch --dry-run "$${DIRECTORY}"
+
