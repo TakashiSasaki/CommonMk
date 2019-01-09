@@ -1,14 +1,18 @@
-.PHONY: updateApt updateNode
+.PHONY: apt-udpate npm-update
+SUDO=$(shell which sudo)
 
-updateApt:
-	sudo apt-get install make;\
-	sudo apt-get update; \
-	sudo apt-get upgrade -y; \
-	sudo apt-get install npm -y;\
-	sudo apt-get autoremove -y
+apt-update:
+ifneq ($(shell which apt-cyg),)
+	apt-cyg update
+else
+	sudo apt-get update
+	sudo apt-get  upgrade -y
+	sudo apt-get  autoremove -y
+endif
 
-updateNode:
-	sudo npm -g install n; \
-	sudo npm -g update;
-	sudo n stable
+npm-update:
+	$(SUDO) $(APT) install npm
+	$(SUDO) npm -g install n
+	$(SUDO) npm -g update
+	$(SUDO) n stable
 
