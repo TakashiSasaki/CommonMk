@@ -3,7 +3,7 @@
 FRCODE=/usr/libexec/frcode
 BIGRAM=/usr/libexec/bigram
 CODE=/usr/libexec/code
-UPDATEDB=./updatedb
+UPDATEDB=/usr/bin/updatedb
 
 all: slocate LOCATE02 old 
 
