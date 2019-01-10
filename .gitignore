@@ -13,3 +13,6 @@ filelist.slocate.updatedb
 filelist.trsorttr
 old/
 slocate/
+updatedb.locate-old
+updatedb.locate02
+updatedb.slocate
