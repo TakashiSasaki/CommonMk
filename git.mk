@@ -22,6 +22,8 @@ git-config:
 	git config pager.config ""
 	git config pager.diff ""
 	git config pager.reflog ""
+	git config pager.tags ""
+
 
 git-check-attr-at:
 	read -e -p "check attributes at : " DIRECTORY ;\
