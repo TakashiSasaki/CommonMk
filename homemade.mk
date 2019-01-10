@@ -3,7 +3,7 @@
 FRCODE=/usr/libexec/frcode
 BIGRAM=/usr/libexec/bigram
 CODE=/usr/libexec/code
-UPDATEDB=/usr/bin/updatedb
+UPDATEDB=./updatedb
 
 all: slocate LOCATE02 old 
 
@@ -38,14 +38,14 @@ old: old/homemade.txt old/updatedb.txt
 
 old/sorted: 
 	-mkdir old/
-	./cat-filelist | tr / '\001' | sort -f | tr '\001' / > $@
+	./cat-filelist | tr /  '\001' | sort -f | tr '\001' / > $@
 	if [ ! -s $@ ];then  rm $@; exit 1; fi
 
-old/bigram: old/sorted
-	cat $< | ${BIGRAM} | sort | uniq -c | sort -nr | awk '{ if (NR <= 128) print $2 }' | tr -d '\012' > $@
+old/bigrams: old/sorted
+	cat $< | ${BIGRAM} | sort | uniq -c | sort -nr | awk '{ if (NR <= 128) print $$2 }' | tr -d '\012' > $@
 
-old/homemade.db: old/bigram
-	./cat-filelist | ${CODE} $< > $@
+old/homemade.db: old/bigrams old/sorted
+	cat old/sorted | ${CODE} old/bigrams > $@
 	if [ ! -s $@ ];then rm $@; exit 1; fi
 
 old/updatedb.db: 

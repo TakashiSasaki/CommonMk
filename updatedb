@@ -286,7 +286,7 @@ fi
 # Sort case insensitively for users' convenience.
 
 rm -f $LOCATE_DB.n
-trap 'rm -f $LOCATE_DB.n; exit' HUP TERM
+#trap 'rm -f $LOCATE_DB.n; exit' HUP TERM
 
 if test $old = no; then
 # LOCATE02 or slocate format
@@ -344,6 +344,7 @@ fi
 else # old
 
 if temp_directory="`make_tempdir`"; then
+    echo temp_directory = "${temp_directory}"
     bigrams="${temp_directory}"/bigrams
     filelist="${temp_directory}"/filelist
 else
@@ -352,7 +353,7 @@ else
 fi
 
 rm -f $LOCATE_DB.n
-trap 'rm -f $LOCATE_DB.n; rm -rf "${temp_directory}"; exit' HUP TERM
+#trap 'rm -f $LOCATE_DB.n; rm -rf "${temp_directory}"; exit' HUP TERM
 
 # Alphabetize subdirectories before file entries using tr.  James Woods says:
 # "to get everything in monotonic collating sequence, to avoid some
@@ -390,13 +391,14 @@ fi
 } | tr / '\001' | $sort -f | tr '\001' / > "$filelist"
 
 # Compute the (at most 128) most common bigrams in the file list.
+echo bigram_opts = "${bigram_opts}"
 $bigram $bigram_opts < $filelist | sort | uniq -c | sort -nr |
   awk '{ if (NR <= 128) print $2 }' | tr -d '\012' > "$bigrams"
 
 # Code the file list.
 $code "$bigrams" < "$filelist" > $LOCATE_DB.n
 
-rm -rf "${temp_directory}"
+#rm -rf "${temp_directory}"
 
 # To reduce the chances of breaking locate while this script is running,
 # put the results in a temp file, then rename it atomically.
