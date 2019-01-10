@@ -1,4 +1,3 @@
-#!make
 help:
 	@echo This is help target in color.mk.
 	@echo Including color.mk provides the function to change colors.
