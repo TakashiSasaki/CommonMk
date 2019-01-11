@@ -1,25 +1,61 @@
-.PHONY: all
+.PHONY: all clean
 
-all: icacls.txt takeown.txt whoami.groups.txt whoami.user.txt whoami.priv.txt
+all: icacls.utf8 takeown.utf8 whoami.groups.utf8 whoami.user.utf8 whoami.priv.utf8 whoami-uac.priv.utf8 whoami-uac.groups.utf8 whoami-uac.user.utf8
 
-icacls.txt:
-	icacls.exe | tr -d '\r' | iconv -f MS_KANJI -t utf8 | tee $@
+clean:
+	git clean -fdx
 
-takeown.txt:
-	takeown.exe /? | tr -d '\r' | iconv -f MS_KANJI -t utf8 | tee $@
+icacls.sjis:
+	icacls.exe /? >$@
 
-whoami.txt:
-	whoami.exe /? | tr -d '\r' | iconv -f MS_KANJI -t utf8 | tee $@
+takeown.sjis:
+	takeown.exe /? >$@
 
+whoami.sjis:
+	whoami.exe /? >$@
+
+cscript.sjis:
+	cscript > $@
 
 takeown-me:
 	takeown /F "*" /R 2>&1| iconv -f MS_KANJI -t utf8
 
-whoami.user.txt:
-	whoami.exe /USER /FO CSV /NH 2>&1 | tr -d "\r" | iconv -f MS_KANJI | tee $@
+whoami.user.sjis:
+	whoami.exe /USER /FO CSV /NH 2>&1 >$@
 
-whoami.groups.txt:
-	whoami.exe /GROUPS /FO CSV /NH 2>&1 | tr -d "\r" | iconv -f MS_KANJI| tee $@
+whoami.groups.sjis:
+	whoami.exe /GROUPS /FO CSV /NH 2>&1 >$@
 
-whoami.priv.txt:
-	whoami.exe /PRIV /FO CSV /NH 2>&1 | tr -d "\r" | iconv -f MS_KANJI| tee $@
+whoami.priv.sjis:
+	whoami.exe /PRIV /FO CSV /NH 2>&1 >$@
+
+whoami-uac.user.sjis: ShellExecute.js
+	-rm $@
+	cscript //T:10 $< 'cmd.exe' '/C whoami.exe /USER /FO CSV /NH >$(shell cmd /C cd)\\$@' \
+		'$(shell cmd /C cd)' 'runas' 1
+	sleep 5
+	test -s $@
+
+whoami-uac.groups.sjis: ShellExecute.js
+	-rm $@
+	cscript //T:10 $< 'cmd.exe' '/C whoami.exe /GROUPS /FO CSV /NH >$(shell cmd /C cd)\\$@' \
+		'$(shell cmd /C cd)' 'runas' 1
+	sleep 5
+	test -s $@
+
+whoami-uac.priv.sjis: ShellExecute.js
+	-rm $@
+	cscript //T:10 $< 'cmd.exe' '/C whoami.exe /PRIV /FO CSV /NH >$(shell cmd /C cd)\\$@' \
+		'$(shell cmd /C cd)' 'runas' 1
+	sleep 5
+	test -s $@
+
+%.utf8: %.sjis
+	cat $< | tr -d "\r" | iconv -f MS_KANJI -t UTF8 | tee $@
+
+ShellExecute.js:
+	echo '(new ActiveXObject("Shell.Application")).ShellExecute(WScript.Arguments(0), WScript.Arguments(1), WScript.Arguments(2), WScript.Arguments(3), WScript.Arguments(4));' | tee $@
+
+cd.winpath:
+	echo $(shell cmd /C cd) | tr -d '\r\n' | iconv -f MS_KANJI -t UTF8 | tee $@
+
