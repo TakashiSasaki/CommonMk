@@ -56,3 +56,11 @@ whoami.priv.utf8
 whoami.user.sjis
 whoami.user.txt
 whoami.user.utf8
+cd.winpath.escaped
+cd.winpath.sjis
+cd.winpath.utf8
+cd.winpath.utf8.multiline
+test.winpath
+test.winpath.escaped
+x.winpath.utf8
+x.winpath.utf8.multiline
