@@ -17,9 +17,6 @@ whoami.sjis:
 cscript.sjis:
 	cscript > $@
 
-takeown-me:
-	takeown /F "*" /R 2>&1| iconv -f MS_KANJI -t utf8
-
 whoami.user.sjis:
 	whoami.exe /USER /FO CSV /NH 2>&1 >$@
 
@@ -31,23 +28,23 @@ whoami.priv.sjis:
 
 whoami-uac.user.sjis: ShellExecute.js
 	-rm $@
-	cscript //T:10 $< 'cmd.exe' '/C whoami.exe /USER /FO CSV /NH >$(shell cmd /C cd)\\$@' \
+	cscript $< 'cmd.exe' '/C whoami.exe /USER /FO CSV /NH >$(shell cmd /C cd)\\$@' \
 		'$(shell cmd /C cd)' 'runas' 1
-	sleep 5
+	sleep 1
 	test -s $@
 
 whoami-uac.groups.sjis: ShellExecute.js
 	-rm $@
-	cscript //T:10 $< 'cmd.exe' '/C whoami.exe /GROUPS /FO CSV /NH >$(shell cmd /C cd)\\$@' \
+	cscript $< 'cmd.exe' '/C whoami.exe /GROUPS /FO CSV /NH >$(shell cmd /C cd)\\$@' \
 		'$(shell cmd /C cd)' 'runas' 1
-	sleep 5
+	sleep 1
 	test -s $@
 
 whoami-uac.priv.sjis: ShellExecute.js
 	-rm $@
-	cscript //T:10 $< 'cmd.exe' '/C whoami.exe /PRIV /FO CSV /NH >$(shell cmd /C cd)\\$@' \
+	cscript $< 'cmd.exe' '/C whoami.exe /PRIV /FO CSV /NH >$(shell cmd /C cd)\\$@' \
 		'$(shell cmd /C cd)' 'runas' 1
-	sleep 5
+	sleep 1
 	test -s $@
 
 %.utf8: %.sjis
@@ -58,4 +55,11 @@ ShellExecute.js:
 
 cd.winpath:
 	echo $(shell cmd /C cd) | tr -d '\r\n' | iconv -f MS_KANJI -t UTF8 | tee $@
+
+takeown-me.sjis: ShellExecute.js
+	-rm $@
+	cscript $< 'cmd.exe' '/C takeown.exe /F * >$(shell cmd /C cd)\\$@' \
+		'$(shell cmd /C cd)' 'runas' 1
+	sleep 1
+	test -s $@
 

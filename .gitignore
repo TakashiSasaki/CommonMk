@@ -27,3 +27,5 @@ whoami.priv.utf8
 whoami.user.sjis
 whoami.user.txt
 whoami.user.utf8
+takeown-me.sjis
+takeown-me.utf8
