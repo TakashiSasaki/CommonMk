@@ -1,20 +1,27 @@
 .PHONY: all clean
 
-all: icacls.utf8 takeown.utf8 whoami.groups.utf8 whoami.user.utf8 whoami.priv.utf8 whoami-uac.priv.utf8 whoami-uac.groups.utf8 whoami-uac.user.utf8
+all: icacls.help.utf8 takeown.help.utf8 whoami.help.utf8 cscript.help.utf8 \
+	whoami.groups.utf8 \
+	whoami.user.utf8 \
+	whoami.priv.utf8 \
+	whoami-uac.priv.utf8 \
+	whoami-uac.groups.utf8 \
+	whoami-uac.user.utf8 \
+	whoami-uac.utf8
 
 clean:
 	git clean -fdx
 
-icacls.sjis:
+icacls.help.sjis:
 	icacls.exe /? >$@
 
-takeown.sjis:
+takeown.help.sjis:
 	takeown.exe /? >$@
 
-whoami.sjis:
+whoami.help.sjis:
 	whoami.exe /? >$@
 
-cscript.sjis:
+cscript.help.sjis:
 	cscript > $@
 
 whoami.user.sjis:
@@ -56,9 +63,16 @@ ShellExecute.js:
 cd.winpath:
 	echo $(shell cmd /C cd) | tr -d '\r\n' | iconv -f MS_KANJI -t UTF8 | tee $@
 
-takeown-me.sjis: ShellExecute.js
+takeown.sjis: ShellExecute.js
 	-rm $@
 	cscript $< 'cmd.exe' '/C takeown.exe /F * >$(shell cmd /C cd)\\$@' \
+		'$(shell cmd /C cd)' 'runas' 1
+	sleep 1
+	test -s $@
+
+%.sjis: %.runas ShellExecute.js
+	-rm $@
+	cscript $(lastword $^) 'cmd.exe' '/C $(shell cat $(firstword $^) ) >$(shell cmd /C cd)\\$@' \
 		'$(shell cmd /C cd)' 'runas' 1
 	sleep 1
 	test -s $@

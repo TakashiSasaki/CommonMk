@@ -29,3 +29,14 @@ whoami.user.txt
 whoami.user.utf8
 takeown-me.sjis
 takeown-me.utf8
+whoami-uac.runas
+whoami-uac.utf8
+cscript.help.sjis
+cscript.help.sjis
+cscript.help.utf8
+whoami.help.sjis
+whoami.help.utf8
+icacls.help.sjis
+icacls.help.utf8
+takeown.help.sjis
+takeown.help.utf8
