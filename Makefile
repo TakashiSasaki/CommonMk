@@ -1,4 +1,4 @@
-.PHONY: all clean
+.PHONY: all clean takeown
 .DELETE_ON_ERROR:
 
 all: \
@@ -100,6 +100,9 @@ cd.winpath:
 
 takeown.runas.utf8:
 	$(file >$@,takeown.exe /F *)
+
+takeown: takeown.stdout
+	iconv -f MS_KANJI -t UTF8 <$< | tr -d "\r" | sed -n -e "/^[ \r\n]*$$/n" -e "p"
 
 %.stdout: %.runas.utf16le runas.js
 	-rm $@
