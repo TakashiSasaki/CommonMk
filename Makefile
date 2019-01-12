@@ -1,16 +1,18 @@
 .PHONY: all clean
+.DELETE_ON_ERROR:
 
-all: icacls.help.utf8 \
-	takeown.help.utf8 \
-	whoami.help.utf8 \
+all: \
 	cscript.help.utf8 \
-	whoami.groups.utf8 \
-	whoami.user.utf8 \
-	whoami.priv.utf8 \
-	whoami-uac.priv.utf8 \
-	whoami-uac.groups.utf8 \
-	whoami-uac.user.utf8 \
-	whoami-uac.utf8
+	icacls.help.utf8 \
+	takeown.help.utf8 \
+	takeown.utf16le \
+	whoami.groups.sjis \
+	whoami.groups.stdout.utf16le\
+	whoami.help.utf8 \
+	whoami.priv.sjis \
+	whoami.priv.stdout.utf16le\
+	whoami.user.sjis \
+	whoami.user.stdout.utf16le\
 
 clean:
 	git clean -fdx
@@ -36,17 +38,20 @@ whoami.groups.sjis:
 whoami.priv.sjis:
 	whoami.exe /PRIV /FO CSV /NH 2>&1 >$@
 
-whoami-uac.user.runas:
+whoami.user.runas.utf8:
 	$(file >$@, whoami.exe /USER /FO CSV /NH)
 
-whoami-uac.groups.sjis: ShellExecute.js
+whoami.groups.runas.utf8: 
 	$(file >$@, whoami.exe /GROUPS /FO CSV /NH)
 
-whoami-uac.priv.sjis: ShellExecute.js
+whoami.priv.runas.utf8:
 	$(file >$@, whoami.exe /PRIV /FO CSV /NH)
 
 %.utf8: %.sjis
 	cat $< | tr -d "\r" | iconv -f MS_KANJI -t UTF8 | tee $@
+
+%.utf16le: %.utf8
+	iconv -f UTF8 -t UTF16LE <$< >$@
 
 shellexecute.js:
 	$(file >$@,var shell = new ActiveXObject("WScript.Shell");)
@@ -88,7 +93,7 @@ runas.js:
 	$(file >>$@,var vShow = "1";)
 	$(file >>$@,WScript.Echo("vShow \t\t = " + vShow);)
 	$(file >>$@,var a = new ActiveXObject("Shell.Application");)
-	$(file >>$@,a.ShellExecute(sFile, "/C " + vArguments + ' > "' + cd + "\\" + WScript.Arguments(1) + '"', vDirectory, vOperation, vShow);)
+	$(file >>$@,a.ShellExecute(sFile, '/C ' + vArguments + ' > "' + cd + "\\" + WScript.Arguments(1) + '"', vDirectory, vOperation, vShow);)
 
 cd.winpath:
 	echo $(shell cmd /C cd) | tr -d '\r\n' | iconv -f MS_KANJI -t UTF8 | tee $@
@@ -96,15 +101,15 @@ cd.winpath:
 takeown.runas:
 	$(file >$@,takeown.exe /F *)
 
-%.utf16le: %.runas runas.js
+%.stdout.utf16le: %.runas.utf16le runas.js
 	-rm $@
-	cscript //U $< $@
+	cscript $(lastword $^) $< $@
 	sleep 1
 	test $@
 
-%.utf16le: %.shellexecute shellexecute.js
+%.stdout.utf16le: %.shellexecute.utf16le shellexecute.js
 	-rm $@
-	cscript //U $<
+	cscript $(lastword $^) $<
 	sleep 1
 	test -s $@	
 
