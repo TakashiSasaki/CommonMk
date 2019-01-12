@@ -5,14 +5,14 @@ all: \
 	cscript.help.utf8 \
 	icacls.help.utf8 \
 	takeown.help.utf8 \
-	takeown.utf16le \
+	takeown.stdout\
 	whoami.groups.sjis \
-	whoami.groups.stdout.utf16le\
+	whoami.groups.stdout\
 	whoami.help.utf8 \
 	whoami.priv.sjis \
-	whoami.priv.stdout.utf16le\
+	whoami.priv.stdout\
 	whoami.user.sjis \
-	whoami.user.stdout.utf16le\
+	whoami.user.stdout\
 
 clean:
 	git clean -fdx
@@ -39,13 +39,13 @@ whoami.priv.sjis:
 	whoami.exe /PRIV /FO CSV /NH 2>&1 >$@
 
 whoami.user.runas.utf8:
-	$(file >$@, whoami.exe /USER /FO CSV /NH)
+	$(file >$@,whoami.exe /USER /FO CSV /NH)
 
 whoami.groups.runas.utf8: 
-	$(file >$@, whoami.exe /GROUPS /FO CSV /NH)
+	$(file >$@,whoami.exe /GROUPS /FO CSV /NH)
 
 whoami.priv.runas.utf8:
-	$(file >$@, whoami.exe /PRIV /FO CSV /NH)
+	$(file >$@,whoami.exe /PRIV /FO CSV /NH)
 
 %.utf8: %.sjis
 	cat $< | tr -d "\r" | iconv -f MS_KANJI -t UTF8 | tee $@
@@ -98,16 +98,16 @@ runas.js:
 cd.winpath:
 	echo $(shell cmd /C cd) | tr -d '\r\n' | iconv -f MS_KANJI -t UTF8 | tee $@
 
-takeown.runas:
+takeown.runas.utf8:
 	$(file >$@,takeown.exe /F *)
 
-%.stdout.utf16le: %.runas.utf16le runas.js
+%.stdout: %.runas.utf16le runas.js
 	-rm $@
 	cscript $(lastword $^) $< $@
 	sleep 1
 	test $@
 
-%.stdout.utf16le: %.shellexecute.utf16le shellexecute.js
+%.stdout: %.shellexecute.utf16le shellexecute.js
 	-rm $@
 	cscript $(lastword $^) $<
 	sleep 1
