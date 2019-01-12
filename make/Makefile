@@ -1,4 +1,10 @@
-.PHONY: clean
+.PHONY:
+make.unsearched.txt.except: make.unsearched.txt
+
+include ../win.mk
+include ../git.mk
+include ../clean.mk
+
 make.txt:
 	LC_ALL=C make -B -n -r -R -p -s >$@
 
@@ -107,7 +113,7 @@ make.unsearched.txt: make.searched.txt.except
 		-e '/^#  Implicit rule search has been done.+/{' \
 		-e ' xpx' \
 		-e ' : skip' \
-		-e ' nh/^[# \t].+/{' \
+		-e ' nh/^[# \t].*/{' \
 		-e '  b skip' \
 		-e ' }' \
 		-e ' b begin' \
@@ -116,11 +122,3 @@ make.unsearched.txt: make.searched.txt.except
 		| tee $@
 
 make.unsearched.txt.except: make.unsearched.txt
-
-include win.mk
-include git.mk
-
-clean:
-	git clean -ndx
-	@read -e -p "Are you sure ? (Y/n) " yn; \
-		if [ $$yn = "Y" ]; then git clean -fdx; fi
