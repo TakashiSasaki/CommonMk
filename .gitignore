@@ -26,6 +26,27 @@ icacls.help.utf8
 icacls.sjis
 icacls.txt
 icacls.utf8
+make.automatic.txt
+make.automatic.txt.except
+make.automatic.txt.except.except
+make.default.txt
+make.default.txt.except
+make.default.txt.except.except
+make.environment.txt
+make.environment.txt.except
+make.environment.txt.except.except
+make.implicit.txt
+make.implicit.txt.except
+make.makefile.txt
+make.makefile.txt.except
+make.makefile.txt.except.except
+make.phony.txt
+make.phony.txt.except
+make.searched.txt
+make.searched.txt.except
+make.txt
+make.unsearched.txt
+make.unsearched.txt.except
 old/
 runas.js
 slocate/
@@ -34,6 +55,7 @@ takeown-me.utf8
 takeown.help.sjis
 takeown.help.utf8
 takeown.runas
+takeown.runas.stdout
 takeown.runas.utf8
 takeown.sjis
 takeown.stdout
@@ -50,6 +72,7 @@ test.winpath.escaped
 updatedb.locate-old
 updatedb.locate02
 updatedb.slocate
+utomatic.txt
 ver.txt
 whoami-uac.groups.sjis
 whoami-uac.groups.utf8
@@ -61,6 +84,7 @@ whoami-uac.user.sjis
 whoami-uac.user.utf8
 whoami-uac.utf8
 whoami.groups.runas
+whoami.groups.runas.stdout
 whoami.groups.runas.utf8
 whoami.groups.sjis
 whoami.groups.stdout
@@ -71,6 +95,7 @@ whoami.groups.utf8
 whoami.help.sjis
 whoami.help.utf8
 whoami.priv.runas
+whoami.priv.runas.stdout
 whoami.priv.runas.utf8
 whoami.priv.sjis
 whoami.priv.stdout
@@ -79,6 +104,7 @@ whoami.priv.txt
 whoami.priv.utf16le
 whoami.priv.utf8
 whoami.user.runas
+whoami.user.runas.stdout
 whoami.user.runas.utf8
 whoami.user.sjis
 whoami.user.stdout
@@ -88,7 +114,3 @@ whoami.user.utf16le
 whoami.user.utf8
 x.winpath.utf8
 x.winpath.utf8.multiline
-takeown.runas.stdout
-whoami.groups.runas.stdout
-whoami.priv.runas.stdout
-whoami.user.runas.stdout
