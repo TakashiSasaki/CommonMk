@@ -1,12 +1,9 @@
-.PHONY:
-make.unsearched.txt.except: make.unsearched.txt
-
-include ../win.mk
-include ../git.mk
-include ../clean.mk
+.PHONY: all
+all: make.all.txt
 
 make.txt:
-	LC_ALL=C make -B -n -r -R -p -s >$@
+	$(error Run make with -p option by yourself with LC_ALL=C .)
+	$(error Example: LC_ALL=C make -B -n -r -R -p -d)
 
 make.automatic.txt: make.txt
 	cat $< | sed -n -r \
@@ -126,3 +123,30 @@ make.unsearched.txt: make.searched.txt.except
 		| tee $@
 
 make.unsearched.txt.except: make.unsearched.txt
+
+make.%.txt.sorted: make.%.txt
+	sort -u <$< >$@
+
+make.all.txt: \
+	make.automatic.txt.sorted \
+	make.environment.txt.sorted \
+	make.default.txt.sorted \
+	make.implicit.txt.sorted \
+	make.phony.txt.sorted \
+	make.searched.txt.sorted \
+	make.unsearched.txt.sorted
+	echo "# automatic variables" >$@
+	cat make.automatic.txt.sorted >>$@
+	echo "# environment varibles" >>$@
+	cat make.environment.txt.sorted >>$@
+	echo "# default variables" >>$@
+	cat make.default.txt.sorted >>$@
+	echo "# Implicit Rules" >>$@
+	cat make.implicit.txt.sorted >>$@
+	echo "# Phony targets" >>$@
+	cat make.phony.txt.sorted >>$@
+	echo "# Targets with implicit rule search" >>$@
+	cat make.searched.txt.sorted >>$@
+	echo "# Targets without implicit rule search" >>$@
+	cat make.unsearched.txt.sorted >>$@
+
