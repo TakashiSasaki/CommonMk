@@ -114,3 +114,11 @@ whoami.user.utf16le
 whoami.user.utf8
 x.winpath.utf8
 x.winpath.utf8.multiline
+make.all.txt
+make.automatic.txt.sorted
+make.default.txt.sorted
+make.environment.txt.sorted
+make.implicit.txt.sorted
+make.phony.txt.sorted
+make.searched.txt.sorted
+make.unsearched.txt.sorted

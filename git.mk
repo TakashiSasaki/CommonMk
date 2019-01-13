@@ -36,3 +36,6 @@ git-fetch-from:
 	read -e -p "fetch from : " DIRECTORY ; \
 	git fetch --dry-run "$${DIRECTORY}"
 
+git-ignore-untracked:
+	git status -s -u | sed -n -r -e 's/^\?\? (.+)/\1/p' | tee -a .gitignore
+
