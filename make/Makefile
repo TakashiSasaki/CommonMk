@@ -11,10 +11,11 @@ make.txt:
 make.automatic.txt: make.txt
 	cat $< | sed -n -r \
 		-e ': begin' \
-		-e '/^# automatic/{' \
+		-e '/^# automatic.*/{' \
 		-e ' hn/^[^# \t].+/{' \
-		-e '  Hgpnb begin'\
-		-e ' }Hg' \
+		-e '  pnb begin'\
+		-e ' }' \
+		-e ' Gw $@.except' \
 		-e '}' \
 		-e 'w $@.except' \
 		| tee $@
@@ -24,10 +25,11 @@ make.automatic.txt.except: make.automatic.txt
 make.environment.txt: make.automatic.txt.except
 	cat $< | sed -n -r \
 		-e ': begin' \
-		-e '/^# environment/{' \
+		-e '/^# environment.*/{' \
 		-e ' hn/^[^# \t].+/{' \
-		-e '  Hgpnb begin' \
+		-e '  pnb begin'\
 		-e ' }' \
+		-e ' Gw $@.except' \
 		-e '}' \
 		-e 'w $@.except' \
 		| tee $@
@@ -38,10 +40,11 @@ make.environment.txt.except: make.environment.txt
 make.default.txt: make.environment.txt.except
 	cat $< | sed -n -r \
 		-e ': begin' \
-		-e '/^# default/{' \
+		-e '/^# default.*/{' \
 		-e ' hn/^[^# \t].+/{' \
-		-e '  Hgpnb begin' \
+		-e '  pnb begin'\
 		-e ' }' \
+		-e ' Gw $@.except' \
 		-e '}' \
 		-e 'w $@.except' \
 		| tee $@
@@ -53,8 +56,9 @@ make.makefile.txt: make.default.txt.except
 		-e ': begin' \
 		-e '/^# makefile.*/{' \
 		-e ' hn/^[^# \t].+/{' \
-		-e '  Hgpnb begin' \
+		-e '  pnb begin'\
 		-e ' }' \
+		-e ' Gw $@.except' \
 		-e '}' \
 		-e 'w $@.except' \
 		| tee $@
