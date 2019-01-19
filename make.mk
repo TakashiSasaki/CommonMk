@@ -1,9 +1,22 @@
-.PHONY: all
+.PHONY: all a
+MAKE_MK_DIR=make
+vpath make.txt $(MAKE_MK_DIR) 
+vpath make.%.txt $(MAKE_MK_DIR) 
+vpath make.%.txt.except $(MAKE_MK_DIR)
+vpath make.%.txt.sorted $(MAKE_MK_DIR)
+VPATH=$(MAKE_MK_DIR)
+.SUFFIXES: %.txt %.hoge
+
 all: make.all.txt
 
 make.txt:
-	$(error Run make with -p option by yourself with LC_ALL=C .)
-	$(error Example: LC_ALL=C make -B -n -r -R -p -d)
+	$(info Run make with -p option by yourself with LC_ALL=C .)
+	$(info Example: LC_ALL=C make -B -n -r -R -p -d)
+	-LC_ALL=C make -B -n -r -R -p -d >$(MAKE_MK_DIR)/make.txt
+
+a: make.txt
+	$(info $<)
+	$(info $(<D))
 
 make.automatic.txt: make.txt
 	cat $< | sed -n -r \
@@ -12,10 +25,10 @@ make.automatic.txt: make.txt
 		-e ' hn/^[^# \t].+/{' \
 		-e '  pnb begin'\
 		-e ' }' \
-		-e ' Gw $@.except' \
+		-e ' Gw $(MAKE_MK_DIR)/$@.except' \
 		-e '}' \
-		-e 'w $@.except' \
-		| tee $@
+		-e 'w $(MAKE_MK_DIR)/$@.except' \
+		| tee $(MAKE_MK_DIR)/$@
 
 make.automatic.txt.except: make.automatic.txt
 
@@ -26,10 +39,10 @@ make.environment.txt: make.automatic.txt.except
 		-e ' hn/^[^# \t].+/{' \
 		-e '  pnb begin'\
 		-e ' }' \
-		-e ' Gw $@.except' \
+		-e ' Gw $(MAKE_MK_DIR)/$@.except' \
 		-e '}' \
-		-e 'w $@.except' \
-		| tee $@
+		-e 'w $(MAKE_MK_DIR)/$@.except' \
+		| tee $(MAKE_MK_DIR)/$@
 
 make.environment.txt.except: make.environment.txt
 
@@ -41,10 +54,10 @@ make.default.txt: make.environment.txt.except
 		-e ' hn/^[^# \t].+/{' \
 		-e '  pnb begin'\
 		-e ' }' \
-		-e ' Gw $@.except' \
+		-e ' Gw $(MAKE_MK_DIR)/$@.except' \
 		-e '}' \
-		-e 'w $@.except' \
-		| tee $@
+		-e 'w $(MAKE_MK_DIR)/$@.except' \
+		| tee $(MAKE_MK_DIR)/$@
 
 make.default.txt.except: make.default.txt
 
@@ -55,10 +68,10 @@ make.makefile.txt: make.default.txt.except
 		-e ' hn/^[^# \t].+/{' \
 		-e '  pnb begin'\
 		-e ' }' \
-		-e ' Gw $@.except' \
+		-e ' Gw $(MAKE_MK_DIR)/$@.except' \
 		-e '}' \
-		-e 'w $@.except' \
-		| tee $@
+		-e 'w $(MAKE_MK_DIR)/$@.except' \
+		| tee $(MAKE_MK_DIR)/$@
 
 make.makefile.txt.except: make.makefile.txt
 
@@ -71,8 +84,8 @@ make.implicit.txt: make.makefile.txt.except
 		-e ' n/^[^# \t].+/p' \
 		-e ' b loop' \
 		-e '}' \
-		-e 'w $@.except' \
-		| tee $@
+		-e 'w $(MAKE_MK_DIR)/$@.except' \
+		| tee $(MAKE_MK_DIR)/$@
 
 make.implicit.txt.except: make.implicit.txt
 
@@ -87,8 +100,8 @@ make.phony.txt: make.implicit.txt.except
 		-e ' }' \
 		-e ' b begin' \
 		-e '}' \
-		-e 'xw $@.except' \
-		| tee $@
+		-e 'xw $(MAKE_MK_DIR)/$@.except' \
+		| tee $(MAKE_MK_DIR)/$@
 
 make.phony.txt.except: make.phony.txt
 
@@ -103,8 +116,8 @@ make.searched.txt: make.phony.txt.except
 		-e ' }' \
 		-e ' b begin' \
 		-e '}' \
-		-e 'xw $@.except' \
-		| tee $@
+		-e 'xw $(MAKE_MK_DIR)/$@.except' \
+		| tee $(MAKE_MK_DIR)/$@
 
 make.searched.txt.except: make.searched.txt
 
@@ -119,13 +132,13 @@ make.unsearched.txt: make.searched.txt.except
 		-e ' }' \
 		-e ' b begin' \
 		-e '}' \
-		-e 'xw $@.except' \
-		| tee $@
+		-e 'xw $(MAKE_MK_DIR)/$@.except' \
+		| tee $(MAKE_MK_DIR)/$@
 
 make.unsearched.txt.except: make.unsearched.txt
 
 make.%.txt.sorted: make.%.txt
-	sort -u <$< >$@
+	sort -u <$< >$(MAKE_MK_DIR)/$@
 
 make.all.txt: \
 	make.automatic.txt.sorted \
@@ -135,18 +148,20 @@ make.all.txt: \
 	make.phony.txt.sorted \
 	make.searched.txt.sorted \
 	make.unsearched.txt.sorted
-	echo "# automatic variables" >$@
-	cat make.automatic.txt.sorted >>$@
-	echo "# environment varibles" >>$@
-	cat make.environment.txt.sorted >>$@
-	echo "# default variables" >>$@
-	cat make.default.txt.sorted >>$@
-	echo "# Implicit Rules" >>$@
-	cat make.implicit.txt.sorted >>$@
-	echo "# Phony targets" >>$@
-	cat make.phony.txt.sorted >>$@
-	echo "# Targets with implicit rule search" >>$@
-	cat make.searched.txt.sorted >>$@
-	echo "# Targets without implicit rule search" >>$@
-	cat make.unsearched.txt.sorted >>$@
+	echo "# automatic variables" >$(MAKE_MK_DIR)/$@
+	cat $(word 1,$^) >>$(MAKE_MK_DIR)/$@
+	echo "# environment varibles" >>$(MAKE_MK_DIR)/$@
+	cat $(word 2,$^) >>$(MAKE_MK_DIR)/$@
+	echo "# default variables" >>$(MAKE_MK_DIR)/$@
+	cat $(word 3,$^) >>$(MAKE_MK_DIR)/$@
+	echo "# Implicit Rules" >>$(MAKE_MK_DIR)/$@
+	cat $(word 4,$^) >>$(MAKE_MK_DIR)/$@
+	echo "# Phony targets" >>$(MAKE_MK_DIR)/$@
+	cat $(word 5,$^) >>$(MAKE_MK_DIR)/$@
+	echo "# Targets with implicit rule search" >>$(MAKE_MK_DIR)/$@
+	cat $(word 6,$^) >>$(MAKE_MK_DIR)/$@
+	echo "# Targets without implicit rule search" >>$(MAKE_MK_DIR)/$@
+	cat $(word 7,$^) >>$(MAKE_MK_DIR)/$@
 
+%.hoge: %.txt
+	cat $< >$(MAKE_MK_DIR)/$@
