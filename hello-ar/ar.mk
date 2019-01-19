@@ -5,8 +5,7 @@ ifneq ($(shell which ar.exe),)
   AR:=$(shell which ar.exe)
 endif
 
-all: x.a
-	$(AR) t $<
+all: q.a r.a
 
 dir1/:
 	-mkdir dir1/
@@ -20,6 +19,11 @@ dir1/date1.txt: dir1/
 dir2/date2.txt: dir2/
 	date > $@
 
-x.a: dir1/date1.txt dir2/date2.txt
-	$(AR) q $@ $<
+q.a: dir1/date1.txt dir2/date2.txt
+	$(AR) q $@ $^
+	$(AR) tv $@
+
+r.a: dir1/date1.txt dir2/date2.txt
+	$(AR) r $@ $^
+	$(AR) tv $@
 
