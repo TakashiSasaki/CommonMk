@@ -1,5 +1,6 @@
 #!/bin/make -f 
-all:
+.PHONY: posix-env
+posix-env:
 	$(if $(ARFLAGS),$(info ARFLAGS=$(ARFLAGS)))
 	$(if $(CC),$(info CC=$(CC)))
 	$(if $(CDPATH),$(info CDPATH=$(CDPATH)))
