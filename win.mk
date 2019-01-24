@@ -183,6 +183,19 @@ all-vhd.cygpaths:
 	for x in /drives/?/*.vhd; do echo $$x; done >>$@
 	for x in `cygpath -u '$(USERPROFILE)'`/*/*.vhd; do echo $$x ; done >>$@
 
-mount-all-vhd: all-vhd.winpaths
-	cat $<
+%.winpaths.md5 : %.winpaths
+	$(eval tmp1=$(shell mktemp))
+	$(eval tmp2=$(shell mktemp))
+	cat $< | $(XARGS) -I{} sh -c "echo -n '{}' | md5sum" >$(tmp1)
+	cut -f 1 -d " " <$(tmp1) >$(tmp2)
+	paste -d "\n" $(tmp2) $< >$@
+	cat $@
 
+%.winpaths.d/: %.winpaths.md5
+	-rm $@*
+	-mkdir $@
+	split -l1 $< $@
+
+mount-all-vhd: all-vhd.winpaths
+	-mkdir $<.d
+	cat $< | xargs
