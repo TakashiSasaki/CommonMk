@@ -20,6 +20,7 @@ all: \
 	list-vdisk \
 	list-vhd \
 	mount-all-vhd \
+	all-vhd.winpaths.d/ \
 
 
 clean:
@@ -191,11 +192,21 @@ all-vhd.cygpaths:
 	paste -d "\n" $(tmp2) $< >$@
 	cat $@
 
-%.winpaths.d/: %.winpaths.md5
-	-rm $@*
+%.winpaths.d/: %.winpaths
 	-mkdir $@
+	-rm $@*
 	split -l1 $< $@
+	for x in $@*; do tr -d "\n\r" <$$x >$$x.winpath; rm $$x; done
+	ls $@
 
-mount-all-vhd: all-vhd.winpaths
-	-mkdir $<.d
-	cat $< | xargs
+%.winpath.utf8: %.winpath
+	iconv -t UTF8 <$< >$@	
+
+%.winpath.sjis: %.winpath
+	iconv -t MS_KANJI <$< >$@	
+
+%.winpath.utf16le: %.winpath
+	iconv -t UTF16LE <$< >$@	
+
+mount-all-vhd: all-vhd.winpaths.d/
+	for x in $<*.winpath; do echo $$x; done

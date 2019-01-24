@@ -4,6 +4,8 @@
 LOCATE02/
 ShellExecute.js
 all-vhd.cygpaths
+all-vhd.winpaths
+all-vhd.winpaths.d/
 all.githash
 cd.winpath
 cd.winpath.escaped
@@ -148,4 +150,3 @@ whoami.user.utf16le
 whoami.user.utf8
 x.winpath.utf8
 x.winpath.utf8.multiline
-all-vhd.winpaths
