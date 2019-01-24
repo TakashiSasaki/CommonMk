@@ -1,4 +1,8 @@
-.PHONY: all clean takeown
+SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
+$(info $(MAKEFILE_LIST))
+$(info $(SELF_DIR))
+include $(SELF_DIR)xargs.mk
+.PHONY: all clean takeown list-vdisk list-vhd
 .DELETE_ON_ERROR:
 
 all: \
@@ -7,12 +11,16 @@ all: \
 	takeown-help.utf8 \
 	takeown.runas.stdout\
 	whoami-groups.sjis \
-	whoami-groups.runas.stdout\
+	whoami-groups.runas.stdout \
 	whoami-help.utf8 \
 	whoami-priv.sjis \
-	whoami-priv.runas.stdout\
+	whoami-priv.runas.stdout \
 	whoami-user.sjis \
-	whoami-user.runas.stdout\
+	whoami-user.runas.stdout \
+	list-vdisk \
+	list-vhd \
+	mount-all-vhd \
+
 
 clean:
 	git clean -fdx
@@ -60,16 +68,16 @@ whoami-priv.sjis:
 	sed -e 's/ /\\ /g' -e 's/\\r//g' -e 's/\\n//g' -e '/^$$/d'  <$< | tee $@
 
 %.winpaths: %.cygpaths
-	cat $< | xargs -n1 cygpath -w  | tee $@
+	cat $< | $(XARGS) -L1 -I{} cygpath -w {} | tee $@
 
 %.winpaths.utf8: %.winpath.utf8
-	cat $< | xargs -n1 echo >$@
+	cat $< | $(XARGS) -L1 echo >$@
 
 %.winpaths.sjis: %.winpath.sjis
-	cat $< | xargs -n1 echo >$@
+	cat $< | $(XARGS) -L1 echo >$@
 
 %.winpaths.utf16le: %.winpath.utf16le
-	cat $< | xargs -n1 echo >$@
+	cat $< | $(XARGS) -L1 echo >$@
 
 whoami-user.runas.utf8:
 	$(file >$@,whoami.exe /USER /FO CSV /NH)
@@ -174,4 +182,7 @@ all-vhd.cygpaths:
 	-rm $@
 	for x in /drives/?/*.vhd; do echo $$x; done >>$@
 	for x in `cygpath -u '$(USERPROFILE)'`/*/*.vhd; do echo $$x ; done >>$@
+
+mount-all-vhd: all-vhd.winpaths
+	cat $<
 

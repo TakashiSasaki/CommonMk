@@ -1,6 +1,7 @@
-ifndef XARGS
-$(error XARGS should be set to non-busybox xargs.)
-endif
+SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
+$(info $(MAKEFILE_LIST))
+$(info $(SELF_DIR))
+include $(SELF_DIR)xargs.mk
 
 %.md5sum: %.files
 	cat $< | ($(XARGS) -L1 -I{} md5sum {}) | tee $@
