@@ -3,8 +3,10 @@ $(info $(MAKEFILE_LIST))
 $(info $(SELF_DIR))
 include $(SELF_DIR)xargs.mk
 include $(SELF_DIR)clean.mk
+include $(SELF_DIR)iconv.mk
 .PHONY: all clean takeown list-vdisk list-vhd
 .DELETE_ON_ERROR:
+.DEFAULT_GOAL=all
 
 all: \
 	all-vhd.winpaths.d/ \
@@ -85,17 +87,6 @@ whoami-groups.runas.utf8:
 
 whoami-priv.runas.utf8:
 	$(file >$@,whoami.exe /PRIV /FO CSV /NH)
-
-%.utf8: %.sjis
-	cat $< | tr -d "\r" | iconv -f MS_KANJI -t UTF8 >$@
-	@test -s $@
-
-%.utf16le: %.utf8
-	iconv -f UTF8 -t UTF16LE <$< >$@
-	@test -s $@
-
-%.sjis: %.utf8
-	iconv -f MS_KANJI -t UTF8 <$< >$@
 
 shellexecute.js:
 	$(file >$@,var shell = new ActiveXObject("WScript.Shell");)
