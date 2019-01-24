@@ -145,3 +145,5 @@ whoami.user.utf16le
 whoami.user.utf8
 x.winpath.utf8
 x.winpath.utf8.multiline
+list-vdisk.diskpart.runas.stdout
+list-vdisk.diskpart.utf8

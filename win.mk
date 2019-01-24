@@ -88,6 +88,9 @@ whoami-priv.runas.utf8:
 	iconv -f UTF8 -t UTF16LE <$< >$@
 	@test -s $@
 
+%.sjis: %.utf8
+	iconv -f MS_KANJI -t UTF8 <$< >$@
+
 shellexecute.js:
 	$(file >$@,var shell = new ActiveXObject("WScript.Shell");)
 	$(file >>$@,var cd = shell.CurrentDirectory;)
@@ -151,4 +154,16 @@ takeown: takeown.runas.stdout
 	sleep 1
 	test -s $@	
 
+%.attach-vdisk.diskpart.utf8: %.winpath.utf8
+	$(file >$@,SELECT VDISK FILE="$(shell cat "$<")")
+	$(file >>$@,ATTACH VDISK)
+
+%.diskpart.runas.utf8: %.diskpart.sjis
+	$(file >$@,DISKPART /S $(shell cygpath -a -w "$<"))
+
+list-vdisk: list-vdisk.diskpart.runas.stdout
+	iconv -f SJIS -t UTF8 <$<
+
+list-vdisk.diskpart.utf8:
+	$(file >$@,LIST VDISK)
 
