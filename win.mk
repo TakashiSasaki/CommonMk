@@ -59,6 +59,18 @@ whoami-priv.sjis:
 %.winpath.escaped: %.winpath
 	sed -e 's/ /\\ /g' -e 's/\\r//g' -e 's/\\n//g' -e '/^$$/d'  <$< | tee $@
 
+%.winpaths: %.cygpaths
+	cat $< | xargs -n1 cygpath -w  | tee $@
+
+%.winpaths.utf8: %.winpath.utf8
+	cat $< | xargs -n1 echo >$@
+
+%.winpaths.sjis: %.winpath.sjis
+	cat $< | xargs -n1 echo >$@
+
+%.winpaths.utf16le: %.winpath.utf16le
+	cat $< | xargs -n1 echo >$@
+
 whoami-user.runas.utf8:
 	$(file >$@,whoami.exe /USER /FO CSV /NH)
 
@@ -139,6 +151,4 @@ takeown: takeown.runas.stdout
 	sleep 1
 	test -s $@	
 
-%.winpaths: %.cygpaths
-	cat $< | xargs -n1 cygpath -w  | tee $@
 
