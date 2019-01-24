@@ -2,43 +2,43 @@
 .DELETE_ON_ERROR:
 
 all: \
-	cscript.help.utf8 \
-	icacls.help.utf8 \
-	takeown.help.utf8 \
+	cscript-help.utf8 \
+	icacls-help.utf8 \
+	takeown-help.utf8 \
 	takeown.runas.stdout\
-	whoami.groups.sjis \
-	whoami.groups.runas.stdout\
-	whoami.help.utf8 \
-	whoami.priv.sjis \
-	whoami.priv.runas.stdout\
-	whoami.user.sjis \
-	whoami.user.runas.stdout\
+	whoami-groups.sjis \
+	whoami-groups.runas.stdout\
+	whoami-help.utf8 \
+	whoami-priv.sjis \
+	whoami-priv.runas.stdout\
+	whoami-user.sjis \
+	whoami-user.runas.stdout\
 
 clean:
 	git clean -fdx
 
-icacls.help.sjis:
+icacls-help.sjis:
 	icacls.exe /? >$@
 
-takeown.help.sjis:
+takeown-help.sjis:
 	takeown.exe /? >$@
 
-whoami.help.sjis:
+whoami-help.sjis:
 	whoami.exe /? >$@
 
-cscript.help.sjis:
+cscript-help.sjis:
 	cscript > $@
 
-cmd.help.sjis:
+cmd-help.sjis:
 	cmd /? >$@
 
-whoami.user.sjis:
+whoami-user.sjis:
 	whoami.exe /USER /FO CSV /NH 2>&1 >$@
 
-whoami.groups.sjis:
+whoami-groups.sjis:
 	whoami.exe /GROUPS /FO CSV /NH 2>&1 >$@
 
-whoami.priv.sjis:
+whoami-priv.sjis:
 	whoami.exe /PRIV /FO CSV /NH 2>&1 >$@
 
 %.winpath.utf8: %.winpath.sjis
@@ -59,20 +59,22 @@ whoami.priv.sjis:
 %.winpath.escaped: %.winpath
 	sed -e 's/ /\\ /g' -e 's/\\r//g' -e 's/\\n//g' -e '/^$$/d'  <$< | tee $@
 
-whoami.user.runas.utf8:
+whoami-user.runas.utf8:
 	$(file >$@,whoami.exe /USER /FO CSV /NH)
 
-whoami.groups.runas.utf8: 
+whoami-groups.runas.utf8: 
 	$(file >$@,whoami.exe /GROUPS /FO CSV /NH)
 
-whoami.priv.runas.utf8:
+whoami-priv.runas.utf8:
 	$(file >$@,whoami.exe /PRIV /FO CSV /NH)
 
 %.utf8: %.sjis
-	cat $< | tr -d "\r" | iconv -f MS_KANJI -t UTF8 | tee $@
+	cat $< | tr -d "\r" | iconv -f MS_KANJI -t UTF8 >$@
+	@test -s $@
 
 %.utf16le: %.utf8
 	iconv -f UTF8 -t UTF16LE <$< >$@
+	@test -s $@
 
 shellexecute.js:
 	$(file >$@,var shell = new ActiveXObject("WScript.Shell");)
@@ -136,4 +138,7 @@ takeown: takeown.runas.stdout
 	cscript $(lastword $^) $<
 	sleep 1
 	test -s $@	
+
+%.winpaths: %.cygpaths
+	cat $< | xargs -n1 cygpath -w  | tee $@
 
