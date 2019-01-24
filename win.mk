@@ -167,3 +167,11 @@ list-vdisk: list-vdisk.diskpart.runas.stdout
 list-vdisk.diskpart.utf8:
 	$(file >$@,LIST VDISK)
 
+list-vhd: all-vhd.cygpaths
+	cat $<
+
+all-vhd.cygpaths:
+	-rm $@
+	for x in /drives/?/*.vhd; do echo $$x; done >>$@
+	for x in `cygpath -u '$(USERPROFILE)'`/*/*.vhd; do echo $$x ; done >>$@
+

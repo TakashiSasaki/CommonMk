@@ -3,6 +3,7 @@
 *.updatedb
 LOCATE02/
 ShellExecute.js
+all-vhd.cygpaths
 all.githash
 cd.winpath
 cd.winpath.escaped
@@ -33,6 +34,8 @@ icacls.help.utf8
 icacls.sjis
 icacls.txt
 icacls.utf8
+list-vdisk.diskpart.runas.stdout
+list-vdisk.diskpart.utf8
 make.all.txt
 make.automatic.txt
 make.automatic.txt.except
@@ -145,5 +148,3 @@ whoami.user.utf16le
 whoami.user.utf8
 x.winpath.utf8
 x.winpath.utf8.multiline
-list-vdisk.diskpart.runas.stdout
-list-vdisk.diskpart.utf8
