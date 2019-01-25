@@ -1,11 +1,5 @@
-SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
-$(info $(MAKEFILE_LIST))
-$(info $(SELF_DIR))
-include $(SELF_DIR)iconv.mk
-.PHONY: runas.mk
-.DEFAULT_GOAL=runas.mk
-
-runas.mk: \
+.PHONY: runas-default
+runas-default: \
 	whoami-user.runas.utf16le \
 	whoami-groups.runas.utf16le \
 	whoami-priv.runas.utf16le \
@@ -19,6 +13,11 @@ runas.mk: \
 	@echo ----------------------------
 	iconv -f MS_KANJI -t UTF8 $(word 6,$^)
 	@echo ----------------------------
+
+SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
+$(info MAKEFILE_LIST = $(MAKEFILE_LIST))
+$(info SELF_DIR = $(SELF_DIR))
+include $(SELF_DIR)iconv.mk
 
 %.runas.stdout: %.runas.utf16le runas.js
 	-rm $@
