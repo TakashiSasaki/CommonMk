@@ -1,19 +1,8 @@
-SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
-$(info $(MAKEFILE_LIST))
-$(info $(SELF_DIR))
-include $(SELF_DIR)xargs.mk
-include $(SELF_DIR)clean.mk
-include $(SELF_DIR)iconv.mk
-.PHONY: all clean takeown list-vdisk list-vhd
-.DELETE_ON_ERROR:
-.DEFAULT_GOAL=all
-
-all: \
-	all-vhd.winpaths.d/ \
+ifndef win-included
+.PHONY: win-default takeown 
+win-default: \
 	cscript-help.utf8 \
 	icacls-help.utf8 \
-	list-vdisk \
-	list-vhd \
 	mount-all-vhd \
 	takeown-help.utf8 \
 	takeown.runas.stdout\
@@ -23,7 +12,23 @@ all: \
 	whoami-priv.runas.stdout \
 	whoami-priv.sjis \
 	whoami-user.runas.stdout \
-	whoami-user.sjis \
+	whoami-user.sjis 
+
+SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
+ifndef xargs-included
+  include $(SELF_DIR)xargs.mk
+endif
+ifndef clean-included
+  include $(SELF_DIR)clean.mk
+endif
+ifndef iconv-included
+  include $(SELF_DIR)iconv.mk
+endif
+ifndef runas-included
+  include $(SELF_DIR)runas.mk
+endif
+
+.DELETE_ON_ERROR:
 
 icacls-help.sjis:
 	icacls.exe /? >$@
@@ -67,9 +72,6 @@ whoami-priv.sjis:
 %.winpath.escaped: %.winpath
 	sed -e 's/ /\\ /g' -e 's/\\r//g' -e 's/\\n//g' -e '/^$$/d'  <$< | tee $@
 
-%.winpaths: %.cygpaths
-	cat $< | $(XARGS) -L1 -I{} cygpath -w {} | tee $@
-
 %.winpaths.utf8: %.winpath.utf8
 	cat $< | $(XARGS) -L1 echo >$@
 
@@ -78,57 +80,6 @@ whoami-priv.sjis:
 
 %.winpaths.utf16le: %.winpath.utf16le
 	cat $< | $(XARGS) -L1 echo >$@
-
-whoami-user.runas.utf8:
-	$(file >$@,whoami.exe /USER /FO CSV /NH)
-
-whoami-groups.runas.utf8: 
-	$(file >$@,whoami.exe /GROUPS /FO CSV /NH)
-
-whoami-priv.runas.utf8:
-	$(file >$@,whoami.exe /PRIV /FO CSV /NH)
-
-shellexecute.js:
-	$(file >$@,var shell = new ActiveXObject("WScript.Shell");)
-	$(file >>$@,var cd = shell.CurrentDirectory;)
-	$(file >>$@,WScript.Echo("CurrentDirectory\t= " + cd);)
-	$(file >>$@,var fso = new ActiveXObject("Scripting.FileSystemObject");)
-	$(file >>$@,var TriStateTrue = -1;)
-	$(file >>$@,var ForReading = 1;)
-	$(file >>$@,var f = fso.OpenTextFile(WScript.Arguments(0), ForReading, false, TriStateTrue);)
-	$(file >>$@,var sFile = f.ReadLine();)
-	$(file >>$@,WScript.Echo("sFile \t\t = " + sFile);)
-	$(file >>$@,var vArguments = f.ReadLine();)
-	$(file >>$@,WScript.Echo("vArguments \t = " + vArguments);)
-	$(file >>$@,var vDirectory = f.ReadLine();)
-	$(file >>$@,WScript.Echo("vDirectory \t = " + vDirectory);)
-	$(file >>$@,var vOperation = f.ReadLine();)
-	$(file >>$@,WScript.Echo("vOperation \t = " + vOperation);)
-	$(file >>$@,var vShow = f.ReadLine();)
-	$(file >>$@,WScript.Echo("vShow \t\t = " + vShow);)
-	$(file >>$@,var a = new ActiveXObject("Shell.Application");)
-	$(file >>$@,a.ShellExecute(sFile, vArguments, vDirectory, vOperation, vShow);)
-
-runas.js:
-	$(file >$@,var shell = new ActiveXObject("WScript.Shell");)
-	$(file >>$@,var cd = shell.CurrentDirectory;)
-	$(file >>$@,WScript.Echo("CurrentDirectory\t= " + cd);)
-	$(file >>$@,var fso = new ActiveXObject("Scripting.FileSystemObject");)
-	$(file >>$@,var TriStateTrue = -1;)
-	$(file >>$@,var ForReading = 1;)
-	$(file >>$@,var f = fso.OpenTextFile(WScript.Arguments(0), ForReading, false, TriStateTrue);)
-	$(file >>$@,var sFile = "cmd.exe";)
-	$(file >>$@,WScript.Echo("sFile \t\t = " + sFile);)
-	$(file >>$@,var vArguments = f.ReadLine();)
-	$(file >>$@,WScript.Echo("vArguments \t = " + vArguments);)
-	$(file >>$@,var vDirectory = ".";)
-	$(file >>$@,WScript.Echo("vDirectory \t = " + vDirectory);)
-	$(file >>$@,var vOperation = "RunAs";)
-	$(file >>$@,WScript.Echo("vOperation \t = " + vOperation);)
-	$(file >>$@,var vShow = "1";)
-	$(file >>$@,WScript.Echo("vShow \t\t = " + vShow);)
-	$(file >>$@,var a = new ActiveXObject("Shell.Application");)
-	$(file >>$@,a.ShellExecute(sFile, '/C ' + vArguments + ' > "' + cd + "\\" + WScript.Arguments(1) + '"', vDirectory, vOperation, vShow);)
 
 cd.winpath:
 	echo $(shell cmd /C cd) | tr -d '\r\n' | iconv -f MS_KANJI -t UTF8 | tee $@
@@ -139,39 +90,6 @@ takeown.runas.utf8:
 takeown: takeown.runas.stdout
 	iconv -f MS_KANJI -t UTF8 <$< | tr -d "\r" | sed -n -e "/^[ \r\n]*$$/n" -e "p"
 
-%.runas.stdout: %.runas.utf16le runas.js
-	-rm $@
-	cscript $(lastword $^) $< $@
-	sleep 1
-	test $@
-
-%.shellexecute.stdout: %.shellexecute.utf16le shellexecute.js
-	-rm $@
-	cscript $(lastword $^) $<
-	sleep 1
-	test -s $@	
-
-%.attach-vdisk.diskpart.utf8: %.winpath.utf8
-	$(file >$@,SELECT VDISK FILE="$(shell cat "$<")")
-	$(file >>$@,ATTACH VDISK)
-
-%.diskpart.runas.utf8: %.diskpart.sjis
-	$(file >$@,DISKPART /S $(shell cygpath -a -w "$<"))
-
-list-vdisk: list-vdisk.diskpart.runas.stdout
-	iconv -f SJIS -t UTF8 <$<
-
-list-vdisk.diskpart.utf8:
-	$(file >$@,LIST VDISK)
-
-list-vhd: all-vhd.cygpaths
-	cat $<
-
-all-vhd.cygpaths:
-	-rm $@
-	for x in /drives/?/*.vhd; do echo $$x; done >>$@
-	for x in `cygpath -u '$(USERPROFILE)'`/*/*.vhd; do echo $$x ; done >>$@
-
 %.winpaths.md5 : %.winpaths
 	$(eval tmp1=$(shell mktemp))
 	$(eval tmp2=$(shell mktemp))
@@ -179,13 +97,6 @@ all-vhd.cygpaths:
 	cut -f 1 -d " " <$(tmp1) >$(tmp2)
 	paste -d "\n" $(tmp2) $< >$@
 	cat $@
-
-%.winpaths.d/: %.winpaths
-	-mkdir $@
-	-rm $@*
-	split -l1 $< $@
-	for x in $@*; do tr -d "\n\r" <$$x >$$x.winpath; rm $$x; done
-	ls $@
 
 %.winpath.utf8: %.winpath
 	iconv -t UTF8 <$< >$@	
@@ -198,3 +109,5 @@ all-vhd.cygpaths:
 
 mount-all-vhd: all-vhd.winpaths.d/
 	for x in $<*.winpath; do echo $$x; done
+
+endif # win-included
