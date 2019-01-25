@@ -1,12 +1,12 @@
-.PHONY: diskpart-default
+.PHONY: diskpart-default mount-all
 diskpart-default: \
+	all-vhd.winpaths.utf8 \
 	all-vhd.winpaths.d/ \
 	test.attach-vdisk.diskpart.utf8 \
 	test.attach-vdisk.diskpart.sjis \
 	list-vdisk.diskpart.sjis \
 	list-vdisk.diskpart.runas.utf8 \
-	list-vdisk.diskpart.runas.stdout \
-	mount-all-vhd
+	list-vdisk.diskpart.runas.stdout 
 	@echo ---------------------------------
 	ls all-vhd.winpaths.d/
 	@echo ---------------------------------
@@ -27,7 +27,9 @@ ifndef runas-included
   include $(SELF_DIR)runas.mk
 endif
 ifndef winpath-included
+  $(info including winpath.mk)
   include $(SELF_DIR)winpath.mk
+  $(info included winpath.mk)
 endif
 
 %.attach-vdisk.diskpart.utf8: %.winpath.utf8
@@ -66,5 +68,5 @@ mount-all-vhd: all-vhd.winpaths.d/
 	$(info MAKEFILE_LIST = $(MAKEFILE_LIST))
 	#for x in $<*; do echo $$x; $(MAKE) -f iconv.mk $${x%%.winpath.utf8}.winpath.sjis; done
 	echo $<*.winpath.utf8
-	for x in $<*.winpath.utf8; do echo $$x; $(MAKE) $${x%%.winpath.utf8}.attach-vdisk.diskpart.runas.utf8; done
+	for x in $<*.winpath.utf8; do echo $$x; $(MAKE) $${x%%.winpath.utf8}.attach-vdisk.diskpart.runas.stdout; done
 	ls $<
