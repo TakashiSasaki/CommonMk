@@ -1,5 +1,6 @@
 #!/bin/make -f 
 .PHONY: posix-env
+.DEFAULT_GOAL=posix-env
 posix-env:
 	$(if $(ARFLAGS),$(info ARFLAGS=$(ARFLAGS)))
 	$(if $(CC),$(info CC=$(CC)))
