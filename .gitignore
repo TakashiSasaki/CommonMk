@@ -150,3 +150,9 @@ whoami.user.utf16le
 whoami.user.utf8
 x.winpath.utf8
 x.winpath.utf8.multiline
+test.sjis
+test.utf8
+test1.sjis
+test2.utf8
+test1.utf8
+test2.sjis
