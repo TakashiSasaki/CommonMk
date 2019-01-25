@@ -65,4 +65,6 @@ mount-all-vhd: all-vhd.winpaths.d/
 	$(info MAKEFILES = $(MAKEFILES))
 	$(info MAKEFILE_LIST = $(MAKEFILE_LIST))
 	#for x in $<*; do echo $$x; $(MAKE) -f iconv.mk $${x%%.winpath.utf8}.winpath.sjis; done
-	for x in $<*; do echo $$x; $(MAKE) $${x%%.winpath.utf8}.attach-vdisk.diskpart.utf8; done
+	echo $<*.winpath.utf8
+	for x in $<*.winpath.utf8; do echo $$x; $(MAKE) $${x%%.winpath.utf8}.attach-vdisk.diskpart.runas.utf8; done
+	ls $<
