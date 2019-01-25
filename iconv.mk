@@ -1,6 +1,5 @@
-.DEFAULT_GOAL=test
-
-test: test1.sjis test2.utf8
+.PHONY: iconv-default
+iconv-default: test1.sjis test2.utf8
 
 test1.utf8:
 	echo hello $@ >$@
