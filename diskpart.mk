@@ -5,7 +5,8 @@ diskpart-default: \
 	test.attach-vdisk.diskpart.sjis \
 	list-vdisk.diskpart.sjis \
 	list-vdisk.diskpart.runas.utf8 \
-	list-vdisk.diskpart.runas.stdout
+	list-vdisk.diskpart.runas.stdout \
+	mount-all-vhd
 	@echo ---------------------------------
 	ls all-vhd.winpaths.d/
 	@echo ---------------------------------
@@ -57,3 +58,11 @@ define uniq =
   ${seen}
 endef
 
+MAKEFILES=$(call uniq,$(MAKEFILE_LIST))
+mount-all-vhd: all-vhd.winpaths.d/
+	$(info MAKE = $(MAKE))
+	$(info MAKEFLAGS = $(MAKEFLAGS))
+	$(info MAKEFILES = $(MAKEFILES))
+	$(info MAKEFILE_LIST = $(MAKEFILE_LIST))
+	#for x in $<*; do echo $$x; $(MAKE) -f iconv.mk $${x%%.winpath.utf8}.winpath.sjis; done
+	for x in $<*; do echo $$x; $(MAKE) $${x%%.winpath.utf8}.attach-vdisk.diskpart.utf8; done
