@@ -51,3 +51,9 @@ all-vhd.cygpaths.utf8:
 test.winpath.utf8:
 	echo -n X:\本日は晴天なり.txt | iconv -t UTF8 >$@
 
+define uniq =
+  $(eval seen :=)
+  $(foreach _,$1,$(if $(filter $_,${seen}),,$(eval seen += $_)))
+  ${seen}
+endef
+
