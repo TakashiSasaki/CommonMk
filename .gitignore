@@ -37,6 +37,8 @@ icacls.sjis
 icacls.txt
 icacls.utf8
 list-vdisk.diskpart.runas.stdout
+list-vdisk.diskpart.runas.utf8
+list-vdisk.diskpart.sjis
 list-vdisk.diskpart.utf8
 make.all.txt
 make.automatic.txt
@@ -85,6 +87,7 @@ takeown.stdout
 takeown.txt
 takeown.utf16le
 takeown.utf8
+test.attach-vdisk.diskpart.sjis
 test.attach-vdisk.diskpart.utf8
 test.cygpaths
 test.input
