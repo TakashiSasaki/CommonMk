@@ -19,6 +19,8 @@ test2.sjis:
 
 %.sjis: %.utf8
 	$(if $<,,$(error %.utf8 is not given))
-	iconv -f UTF8 -t MS_KANJI <$< >$@
+	iconv -f UTF8 -t CP932 <$< >$@
 	@test -s $@
+
+endif
 
