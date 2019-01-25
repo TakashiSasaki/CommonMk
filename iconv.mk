@@ -3,10 +3,10 @@ ifndef iconv-included
 iconv-included=1
 iconv-default: 
 
-#%.utf8: %.sjis
-#	$(if $<,,$(error %.sjis is not given))
-#	cat "$<" | tr -d "\r" | iconv -f CP932 -t UTF8 >$@
-#	@test -s $@
+%.utf8: %.sjis
+	$(if $<,,$(error %.sjis is not given))
+	cat "$<" | tr -d "\r" | iconv -f CP932 -t UTF8 >$@
+	@test -s $@
 
 %.utf16le: %.utf8
 	$(if $<,,$(error %.utf8 is not given))
