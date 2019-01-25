@@ -1,44 +1,52 @@
-.PHONY: all clean takeown
+SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
+$(info $(MAKEFILE_LIST))
+$(info $(SELF_DIR))
+include $(SELF_DIR)xargs.mk
+include $(SELF_DIR)clean.mk
+include $(SELF_DIR)iconv.mk
+.PHONY: all clean takeown list-vdisk list-vhd
 .DELETE_ON_ERROR:
+.DEFAULT_GOAL=all
 
 all: \
-	cscript.help.utf8 \
-	icacls.help.utf8 \
-	takeown.help.utf8 \
+	all-vhd.winpaths.d/ \
+	cscript-help.utf8 \
+	icacls-help.utf8 \
+	list-vdisk \
+	list-vhd \
+	mount-all-vhd \
+	takeown-help.utf8 \
 	takeown.runas.stdout\
-	whoami.groups.sjis \
-	whoami.groups.runas.stdout\
-	whoami.help.utf8 \
-	whoami.priv.sjis \
-	whoami.priv.runas.stdout\
-	whoami.user.sjis \
-	whoami.user.runas.stdout\
+	whoami-groups.runas.stdout \
+	whoami-groups.sjis \
+	whoami-help.utf8 \
+	whoami-priv.runas.stdout \
+	whoami-priv.sjis \
+	whoami-user.runas.stdout \
+	whoami-user.sjis \
 
-clean:
-	git clean -fdx
-
-icacls.help.sjis:
+icacls-help.sjis:
 	icacls.exe /? >$@
 
-takeown.help.sjis:
+takeown-help.sjis:
 	takeown.exe /? >$@
 
-whoami.help.sjis:
+whoami-help.sjis:
 	whoami.exe /? >$@
 
-cscript.help.sjis:
+cscript-help.sjis:
 	cscript > $@
 
-cmd.help.sjis:
+cmd-help.sjis:
 	cmd /? >$@
 
-whoami.user.sjis:
+whoami-user.sjis:
 	whoami.exe /USER /FO CSV /NH 2>&1 >$@
 
-whoami.groups.sjis:
+whoami-groups.sjis:
 	whoami.exe /GROUPS /FO CSV /NH 2>&1 >$@
 
-whoami.priv.sjis:
+whoami-priv.sjis:
 	whoami.exe /PRIV /FO CSV /NH 2>&1 >$@
 
 %.winpath.utf8: %.winpath.sjis
@@ -59,20 +67,26 @@ whoami.priv.sjis:
 %.winpath.escaped: %.winpath
 	sed -e 's/ /\\ /g' -e 's/\\r//g' -e 's/\\n//g' -e '/^$$/d'  <$< | tee $@
 
-whoami.user.runas.utf8:
+%.winpaths: %.cygpaths
+	cat $< | $(XARGS) -L1 -I{} cygpath -w {} | tee $@
+
+%.winpaths.utf8: %.winpath.utf8
+	cat $< | $(XARGS) -L1 echo >$@
+
+%.winpaths.sjis: %.winpath.sjis
+	cat $< | $(XARGS) -L1 echo >$@
+
+%.winpaths.utf16le: %.winpath.utf16le
+	cat $< | $(XARGS) -L1 echo >$@
+
+whoami-user.runas.utf8:
 	$(file >$@,whoami.exe /USER /FO CSV /NH)
 
-whoami.groups.runas.utf8: 
+whoami-groups.runas.utf8: 
 	$(file >$@,whoami.exe /GROUPS /FO CSV /NH)
 
-whoami.priv.runas.utf8:
+whoami-priv.runas.utf8:
 	$(file >$@,whoami.exe /PRIV /FO CSV /NH)
-
-%.utf8: %.sjis
-	cat $< | tr -d "\r" | iconv -f MS_KANJI -t UTF8 | tee $@
-
-%.utf16le: %.utf8
-	iconv -f UTF8 -t UTF16LE <$< >$@
 
 shellexecute.js:
 	$(file >$@,var shell = new ActiveXObject("WScript.Shell");)
@@ -137,3 +151,50 @@ takeown: takeown.runas.stdout
 	sleep 1
 	test -s $@	
 
+%.attach-vdisk.diskpart.utf8: %.winpath.utf8
+	$(file >$@,SELECT VDISK FILE="$(shell cat "$<")")
+	$(file >>$@,ATTACH VDISK)
+
+%.diskpart.runas.utf8: %.diskpart.sjis
+	$(file >$@,DISKPART /S $(shell cygpath -a -w "$<"))
+
+list-vdisk: list-vdisk.diskpart.runas.stdout
+	iconv -f SJIS -t UTF8 <$<
+
+list-vdisk.diskpart.utf8:
+	$(file >$@,LIST VDISK)
+
+list-vhd: all-vhd.cygpaths
+	cat $<
+
+all-vhd.cygpaths:
+	-rm $@
+	for x in /drives/?/*.vhd; do echo $$x; done >>$@
+	for x in `cygpath -u '$(USERPROFILE)'`/*/*.vhd; do echo $$x ; done >>$@
+
+%.winpaths.md5 : %.winpaths
+	$(eval tmp1=$(shell mktemp))
+	$(eval tmp2=$(shell mktemp))
+	cat $< | $(XARGS) -I{} sh -c "echo -n '{}' | md5sum" >$(tmp1)
+	cut -f 1 -d " " <$(tmp1) >$(tmp2)
+	paste -d "\n" $(tmp2) $< >$@
+	cat $@
+
+%.winpaths.d/: %.winpaths
+	-mkdir $@
+	-rm $@*
+	split -l1 $< $@
+	for x in $@*; do tr -d "\n\r" <$$x >$$x.winpath; rm $$x; done
+	ls $@
+
+%.winpath.utf8: %.winpath
+	iconv -t UTF8 <$< >$@	
+
+%.winpath.sjis: %.winpath
+	iconv -t MS_KANJI <$< >$@	
+
+%.winpath.utf16le: %.winpath
+	iconv -t UTF16LE <$< >$@	
+
+mount-all-vhd: all-vhd.winpaths.d/
+	for x in $<*.winpath; do echo $$x; done
