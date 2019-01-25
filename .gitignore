@@ -20,6 +20,8 @@ cscript.help.sjis
 cscript.help.utf8
 cscript.sjis
 cscript.utf8
+date.shellexecute.stdout
+date.shellexecute.utf8
 filelist
 filelist.bigram
 filelist.locate02
@@ -113,12 +115,16 @@ ver.txt
 whoami-groups.runas.stdout
 whoami-groups.runas.utf16le
 whoami-groups.runas.utf8
+whoami-groups.shellexecute.stdout
+whoami-groups.shellexecute.utf8
 whoami-groups.sjis
 whoami-help.sjis
 whoami-help.utf8
 whoami-priv.runas.stdout
 whoami-priv.runas.utf16le
 whoami-priv.runas.utf8
+whoami-priv.shellexecute.stdout
+whoami-priv.shellexecute.utf8
 whoami-priv.sjis
 whoami-uac.groups.sjis
 whoami-uac.groups.utf8
@@ -132,6 +138,8 @@ whoami-uac.utf8
 whoami-user.runas.stdout
 whoami-user.runas.utf16le
 whoami-user.runas.utf8
+whoami-user.shellexecute.stdout
+whoami-user.shellexecute.utf8
 whoami-user.sjis
 whoami.groups.runas
 whoami.groups.runas.stdout
