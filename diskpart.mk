@@ -1,11 +1,5 @@
-SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
-$(info $(MAKEFILE_LIST))
-$(info $(SELF_DIR))
-include $(SELF_DIR)iconv.mk
-.PHONY: diskpart.mk
-.DEFAULT_GOAL=diskpart.mk
-
-diskpart.mk: \
+.PHONY: diskpart-default
+diskpart-default: \
 	all-vhd.cygpaths \
 	test.attach-vdisk.diskpart.utf8 \
 	test.attach-vdisk.diskpart.sjis \
@@ -18,6 +12,12 @@ diskpart.mk: \
 	@echo ---------------------------------
 	cat $(word 5,$^)
 	@echo ---------------------------------
+
+SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
+$(info MAKEFILE_LIST = $(MAKEFILE_LIST))
+$(info SELF_DIR = $(SELF_DIR))
+include $(SELF_DIR)iconv.mk
+include $(SELF_DIR)runas.mk
 
 %.attach-vdisk.diskpart.utf8: %.winpath.utf8
 	$(file >$@,SELECT VDISK FILE="$(shell cat "$<")")
@@ -40,9 +40,6 @@ all-vhd.cygpaths:
 
 test.winpath.utf8:
 	echo -n X:\本日は晴天なり.txt | iconv -t UTF8 >$@
-
-test.attach-vdisk.diskpart.utf8::
-	cat $@
 
 list-vdisk.diskpart.runas:
 	cat $@
