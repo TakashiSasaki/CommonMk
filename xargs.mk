@@ -1,6 +1,5 @@
 ifndef xargs-included
 xargs-included=1
-else
 
 XARGS=$(shell which xargs.exe)
 ifndef XARGS
@@ -10,4 +9,5 @@ ifndef XARGS
   $(error xargs is not found)
 endif
 
-endif
+endif # xargs-included
+

@@ -1,6 +1,6 @@
 ifndef winpath-included
 winpath-included=1
-else 
+$(info winpath.mk)
 
 .PHONY: winpath-default
 winpath-default:

@@ -1,7 +1,6 @@
-.PHONY: runas-default
 ifndef runas-included
+.PHONY: runas-default
 runas-included=1
-else
 
 runas-default: \
 	whoami-user.runas.utf16le \
@@ -62,4 +61,4 @@ whoami-priv.runas.utf8:
 	$(file >$@,whoami.exe /PRIV /FO CSV /NH)
 
 
-endif
+endif # runas-included

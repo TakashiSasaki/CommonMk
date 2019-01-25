@@ -1,8 +1,6 @@
-.PHONY: iconv-default
 ifndef iconv-included
+.PHONY: iconv-default
 iconv-included=1
-else
-
 iconv-default: 
 
 #%.utf8: %.sjis
@@ -20,5 +18,5 @@ iconv-default:
 	iconv -f UTF8 -t CP932 <$< >$@
 	@test -s $@
 
-endif
+endif # iconv-included
 
