@@ -1,16 +1,14 @@
 .PHONY: iconv-default
-iconv-default: test1.sjis test2.utf8
+ifndef iconv-included
+iconv-included=1
+else
 
-test1.utf8:
-	echo hello $@ >$@
+iconv-default: 
 
-test2.sjis:
-	echo hello $@ >$@
-
-%.utf8: %.sjis
-	$(if $<,,$(error %.sjis is not given))
-	cat "$<" | tr -d "\r" | iconv -f MS_KANJI -t UTF8 >$@
-	@test -s $@
+#%.utf8: %.sjis
+#	$(if $<,,$(error %.sjis is not given))
+#	cat "$<" | tr -d "\r" | iconv -f CP932 -t UTF8 >$@
+#	@test -s $@
 
 %.utf16le: %.utf8
 	$(if $<,,$(error %.utf8 is not given))

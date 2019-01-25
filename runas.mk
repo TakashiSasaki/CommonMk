@@ -1,4 +1,8 @@
 .PHONY: runas-default
+ifndef runas-included
+runas-included=1
+else
+
 runas-default: \
 	whoami-user.runas.utf16le \
 	whoami-groups.runas.utf16le \
@@ -17,7 +21,9 @@ runas-default: \
 SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 $(info MAKEFILE_LIST = $(MAKEFILE_LIST))
 $(info SELF_DIR = $(SELF_DIR))
-include $(SELF_DIR)iconv.mk
+ifndef iconv-included
+  include $(SELF_DIR)iconv.mk
+endif
 
 %.runas.stdout: %.runas.utf16le runas.js
 	-rm $@
@@ -56,3 +62,4 @@ whoami-priv.runas.utf8:
 	$(file >$@,whoami.exe /PRIV /FO CSV /NH)
 
 
+endif

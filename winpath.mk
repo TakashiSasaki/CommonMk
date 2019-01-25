@@ -1,9 +1,14 @@
-.PHONY: winpath-default
+ifndef winpath-included
+winpath-included=1
+else 
 
+.PHONY: winpath-default
 winpath-default:
 
 SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
-include $(SELF_DIR)xargs.mk
+ifndef xargs-included
+  include $(SELF_DIR)xargs.mk
+endif
 
 %.winpaths.d/: %.winpaths.utf8
 	-mkdir $@
@@ -14,4 +19,6 @@ include $(SELF_DIR)xargs.mk
 
 %.winpaths.utf8: %.cygpaths.utf8
 	cat $< | $(XARGS) -L1 -I{} cygpath -w {} | tee $@
+
+endif
 

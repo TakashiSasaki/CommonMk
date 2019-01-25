@@ -19,9 +19,15 @@ diskpart-default: \
 SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 $(info MAKEFILE_LIST = $(MAKEFILE_LIST))
 $(info SELF_DIR = $(SELF_DIR))
-include $(SELF_DIR)iconv.mk
-include $(SELF_DIR)runas.mk
-include $(SELF_DIR)winpath.mk
+ifndef iconv-included
+  include $(SELF_DIR)iconv.mk
+endif
+ifndef runas-included
+  include $(SELF_DIR)runas.mk
+endif
+ifndef winpath-included
+  include $(SELF_DIR)winpath.mk
+endif
 
 %.attach-vdisk.diskpart.utf8: %.winpath.utf8
 	$(file >$@,SELECT VDISK FILE="$(shell cat "$<")")
