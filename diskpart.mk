@@ -4,13 +4,16 @@ diskpart-default: \
 	test.attach-vdisk.diskpart.utf8 \
 	test.attach-vdisk.diskpart.sjis \
 	list-vdisk.diskpart.sjis \
-	list-vdisk.diskpart.runas.utf8 
+	list-vdisk.diskpart.runas.utf8 \
+	list-vdisk.diskpart.runas.stdout
 	@echo ---------------------------------
 	ls all-vhd.winpaths.d/
 	@echo ---------------------------------
 	iconv -f MS_KANJI test.attach-vdisk.diskpart.sjis
 	@echo ---------------------------------
 	iconv -f UTF8 list-vdisk.diskpart.runas.utf8
+	@echo ---------------------------------
+	iconv -f MS_KANJI list-vdisk.diskpart.runas.stdout
 	@echo ---------------------------------
 
 SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
@@ -41,7 +44,4 @@ all-vhd.cygpaths.utf8:
 
 test.winpath.utf8:
 	echo -n X:\本日は晴天なり.txt | iconv -t UTF8 >$@
-
-list-vdisk.diskpart.runas:
-	cat $@
 
