@@ -1,3 +1,6 @@
+ifndef make-included
+make-included=1
+
 .PHONY: make-default
 .SUFFIXES: %.txt %.hoge
 
@@ -155,4 +158,7 @@ make.all.txt: \
 
 %.hoge: %.txt
 	cat $< >$@
+
+endif # make-included
+
 
