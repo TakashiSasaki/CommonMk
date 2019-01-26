@@ -31,7 +31,8 @@ endif
 	test $@
 
 runas.js:
-	$(file >$@,var shell = new ActiveXObject("WScript.Shell");)
+	$(file >$@,//;)
+	$(file >>$@,var shell = new ActiveXObject("WScript.Shell");)
 	$(file >>$@,var cd = shell.CurrentDirectory;)
 	$(file >>$@,WScript.Echo("CurrentDirectory\t= " + cd);)
 	$(file >>$@,var fso = new ActiveXObject("Scripting.FileSystemObject");)
