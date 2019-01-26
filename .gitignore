@@ -41,6 +41,7 @@ icacls.sjis
 icacls.txt
 icacls.utf8
 list-vdisk.diskpart.runas.stdout
+list-vdisk.diskpart.runas.utf16le
 list-vdisk.diskpart.runas.utf8
 list-vdisk.diskpart.sjis
 list-vdisk.diskpart.utf8
