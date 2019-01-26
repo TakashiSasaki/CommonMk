@@ -2,7 +2,7 @@ ifndef make-included
 make-included=1
 
 .PHONY: make-default
-.SUFFIXES: %.txt %.hoge
+.SUFFIXES: .txt
 
 make-default: make.all.txt
 
@@ -156,9 +156,5 @@ make.all.txt: \
 	echo "# Targets without implicit rule search" >>$@
 	cat $(word 7,$^) >>$@
 
-%.hoge: %.txt
-	cat $< >$@
-
 endif # make-included
-
 
