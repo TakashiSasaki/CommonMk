@@ -1,3 +1,6 @@
+ifndef diskpart-included
+diskpart-included=1
+
 .PHONY: diskpart-default mount-all
 diskpart-default: \
 	all-vhd.winpaths.utf8 \
@@ -70,3 +73,5 @@ mount-all-vhd: all-vhd.winpaths.d/
 	echo $<*.winpath.utf8
 	for x in $<*.winpath.utf8; do echo $$x; $(MAKE) $${x%%.winpath.utf8}.attach-vdisk.diskpart.runas.stdout; done
 	ls $<
+
+endif # diskpart-included
