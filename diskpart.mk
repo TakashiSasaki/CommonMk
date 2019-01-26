@@ -1,24 +1,38 @@
 ifndef diskpart-included
 diskpart-included=1
 
-.PHONY: diskpart-default mount-all
-diskpart-default: \
-	all-vhd.winpaths.utf8 \
-	all-vhd.winpaths.d/ \
-	test.attach-vdisk.diskpart.utf8 \
-	test.attach-vdisk.diskpart.sjis \
-	list-vdisk.diskpart.sjis \
-	list-vdisk.diskpart.runas.utf8 \
-	list-vdisk.diskpart.runas.stdout 
-	@echo ---------------------------------
-	ls all-vhd.winpaths.d/
-	@echo ---------------------------------
-	iconv -f MS_KANJI test.attach-vdisk.diskpart.sjis
-	@echo ---------------------------------
-	iconv -f UTF8 list-vdisk.diskpart.runas.utf8
-	@echo ---------------------------------
-	iconv -f MS_KANJI list-vdisk.diskpart.runas.stdout
-	@echo ---------------------------------
+.PHONY: diskpart-default diskpart-test mount-all list-all-vhd list-vdisk
+
+diskpart-default: diskpart-test list-all-vhd
+
+
+list-vdisk: list-vdisk.diskpart.runas.stdout
+	iconv -f MS_KANJI $<
+
+list-vdisk.diskpart.sjis:
+	$(file >$@,LIST VDISK)
+
+list-all-vhd: all-vhd.winpaths.d/
+	ls $<
+	cat $<*
+
+all-vhd.cygpaths.utf8:
+	-rm $@
+	for x in /drives/?/*.vhd; do echo $$x; done >>$@
+	for x in `cygpath -u '$(USERPROFILE)'`/*/*.vhd; do echo $$x ; done >>$@
+	cat $@
+
+MAKEFILES=$(call uniq,$(MAKEFILE_LIST))
+attach-all-vhd: all-vhd.winpaths.d/
+	echo $<*.winpath.utf8
+	for x in $<*.winpath.utf8; do echo $$x; $(MAKE) $${x%%.winpath.utf8}.attach-vdisk.diskpart.runas.stdout; done
+	ls $<
+
+diskpart-test: test.attach-vdisk.diskpart.sjis 
+	cat $<
+
+test.winpath.utf8:
+	echo -n X:\本日は晴天なり.txt | iconv -t UTF8 >$@
 
 SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 $(info MAKEFILE_LIST = $(MAKEFILE_LIST))
@@ -42,36 +56,10 @@ endif
 %.diskpart.runas.utf8: %.diskpart.sjis
 	$(file >$@,DISKPART /S $(shell cygpath -a -w "$<"))
 
-#list-vdisk: list-vdisk.diskpart.runas.stdout
-#	iconv -f SJIS -t UTF8 <$<
-
-list-vdisk.diskpart.sjis:
-	$(file >$@,LIST VDISK)
-
-all-vhd.cygpaths.utf8:
-	-rm $@
-	for x in /drives/?/*.vhd; do echo $$x; done >>$@
-	for x in `cygpath -u '$(USERPROFILE)'`/*/*.vhd; do echo $$x ; done >>$@
-	cat $@
-
-test.winpath.utf8:
-	echo -n X:\本日は晴天なり.txt | iconv -t UTF8 >$@
-
 define uniq =
   $(eval seen :=)
   $(foreach _,$1,$(if $(filter $_,${seen}),,$(eval seen += $_)))
   ${seen}
 endef
-
-MAKEFILES=$(call uniq,$(MAKEFILE_LIST))
-mount-all-vhd: all-vhd.winpaths.d/
-	$(info MAKE = $(MAKE))
-	$(info MAKEFLAGS = $(MAKEFLAGS))
-	$(info MAKEFILES = $(MAKEFILES))
-	$(info MAKEFILE_LIST = $(MAKEFILE_LIST))
-	#for x in $<*; do echo $$x; $(MAKE) -f iconv.mk $${x%%.winpath.utf8}.winpath.sjis; done
-	echo $<*.winpath.utf8
-	for x in $<*.winpath.utf8; do echo $$x; $(MAKE) $${x%%.winpath.utf8}.attach-vdisk.diskpart.runas.stdout; done
-	ls $<
 
 endif # diskpart-included
