@@ -46,6 +46,7 @@ diskpart-test: test.attach-vdisk.diskpart.sjis
 	cat $<
 
 test.winpath.utf8:
+	# "X:\It's fine today.txt" in Japanese.
 	echo -n X:\本日は晴天なり.txt | iconv -t UTF8 >$@
 
 SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
