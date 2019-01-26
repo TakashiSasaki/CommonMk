@@ -1,12 +1,12 @@
-.PHONY: all
+.PHONY: make-default
 .SUFFIXES: %.txt %.hoge
 
-all: make.all.txt
+make-default: make.all.txt
 
 make.txt:
 	$(info Run make with -p option by yourself with LC_ALL=C .)
 	$(info Example: LC_ALL=C make -B -n -r -R -p -d)
-	-LC_ALL=C make -B -n -r -R -p -d >make.txt
+	-LC_ALL=C $(MAKE) -B -n -r -R -p -d >make.txt
 
 make.automatic.txt: make.txt
 	cat $< | sed -n -r \
