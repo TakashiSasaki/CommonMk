@@ -98,12 +98,17 @@ takeown.utf16le
 takeown.utf8
 test.attach-vdisk.diskpart.sjis
 test.attach-vdisk.diskpart.utf8
+test.both
 test.cygpaths
 test.input
 test.input.utf16le
 test.js
+test.left
+test.leftonly
 test.output
 test.output'
+test.right
+test.rightonly
 test.sjis
 test.utf8
 test.winpath

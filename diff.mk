@@ -1,31 +1,42 @@
-help: left.txt right.txt
-	@echo This is the help target in diff.mk.
-	cat left.txt
-	cat right.txt
-	@echo calling diffOnlyInRight ...
-	$(call diffOnlyInRight, $(word 1,$^), $(word 2,$^)) 
-	@echo
-	@echo calling diffOnlyInLeft ...
-	$(call diffOnlyInLeft, $(word 1,$^), $(word 2,$^)) 
-	@echo
-	@echo calling diffInBoth ...
-	$(call diffInBoth, $(word 1,$^), $(word 2,$^)) 
+ifndef diff-included
+diff-included=1
+.PHONY: diff-default
 
-left.txt:
-	echo -e one\nthree\nleft\nfour\nfive\nsix\nnine\nten >$@
+diff-default: test.leftonly test.rightonly test.both 
+	cat test.leftonly
+	cat test.rightonly
+	cat test.both
 
-right.txt:
-	echo -e zero\none\nthree\nfour\nright\nfive\neight\nnine\nten >$@
+test.left:
+	for x in {1..10}; do echo `expr $$x \* 2`; done >$@
 
-define diffOnlyInLeft
+test.right:
+	for x in {1..10}; do echo `expr $$x \* 3`; done >$@
+
+%.leftonly: %.left %.right
+	$(call diff-leftonly, $(word 1,$^), $(word 2,$^)) >$@
+
+%.rightonly: %.left %.right
+	$(call diff-rightonly, $(word 1,$^), $(word 2,$^)) >$@
+
+%.both: %.left %.right
+	$(call diff-both, $(word 1,$^), $(word 2,$^)) >$@
+
+ifndef clean-included
+include clean.mk
+endif
+
+define diff-leftonly
 	diff -U10 $1 $2 | tail -n +3 | sed -n -r 's/^-(.*)$$/\1/p'
 endef
 
-define diffOnlyInRight
+define diff-rightonly
 	diff -U10 $1 $2 | tail -n +3 | sed -n -r 's/^\+(.*)$$/\1/p'
 endef
 
-define diffInBoth
+define diff-both 
 	diff -U10 $1 $2 | tail -n +3 | sed -n -r 's/^ (.*)$$/\1/p'
 endef
+
+endif # diff-included
 
