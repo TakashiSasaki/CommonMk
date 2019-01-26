@@ -78,6 +78,7 @@ make.unsearched.txt
 make.unsearched.txt.except
 make.unsearched.txt.sorted
 make/
+makefile-allinone.txt
 old/
 runas.js
 slocate/
