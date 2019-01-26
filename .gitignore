@@ -40,6 +40,9 @@ icacls.help.utf8
 icacls.sjis
 icacls.txt
 icacls.utf8
+list-all-disk.diskpart
+list-all-disk.diskpart.runas.stdout
+list-all-disk.diskpart.utf8
 list-vdisk.diskpart.runas.stdout
 list-vdisk.diskpart.runas.utf16le
 list-vdisk.diskpart.runas.utf8

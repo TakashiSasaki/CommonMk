@@ -1,7 +1,7 @@
 ifndef diskpart-included
 diskpart-included=1
 
-.PHONY: diskpart-default diskpart-test mount-all list-all-vhd list-vdisk
+.PHONY: diskpart-default diskpart-test mount-all list-all-vhd list-vdisk list-all-disk
 
 diskpart-default: diskpart-test list-all-vhd
 
@@ -15,6 +15,20 @@ list-vdisk.diskpart.sjis:
 list-all-vhd: all-vhd.winpaths.d/
 	ls $<
 	cat $<*
+
+list-all-disk: list-all-disk.diskpart.runas.stdout
+	iconv -f CP932 $<
+
+list-all-disk.diskpart.utf8:
+	@-rm $@
+	echo LIST DISK >>$@ 
+	for x in {0..10}; do \
+		echo SELECT DISK $$x; \
+		echo UNIQUEID DISK; \
+		echo DETAIL DISK; \
+		echo LIST PARTITION; \
+	done >>$@
+	cat $@
 
 all-vhd.cygpaths.utf8:
 	-rm $@
