@@ -14,6 +14,7 @@ define include_once
   $(info $$1 = $1)
 endef
 
+$(eval $(call include_once,diff))
 $(eval $(call include_once,diskpart))
 $(eval $(call include_once,git))
 $(eval $(call include_once,runas))
