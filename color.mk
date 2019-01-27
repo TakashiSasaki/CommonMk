@@ -1,20 +1,24 @@
-help:
+ifndef color-included
+color-included=1
+.PHONY: color-default
+color-default:
 	@echo This is help target in color.mk.
 	@echo Including color.mk provides the function to change colors.
-	@echo -n $$\(call red,hello red text\) =\>\\t
+	@echo -e -n "\$$(call red,hello red text)\t\t=>\t"
 	$(call red,hello red text)
-	@echo -n $$\(call blue,hello blue text\) =\>\\t
+	@echo -e -n "\$$(call blue,hello blue text)\t\t=>\t"
 	$(call blue,hello blue text)
-	@echo -n $$\(call green,hello green text\) =\>\\t
+	@echo -e -n "\$$(call green,hello green text)\t\t=>\t"
 	$(call green,hello green text)
-	@echo -n $$\(call white,hello white text\) =\>\\t
+	@echo -e -n "\$$(call white,hello white text)\t\t=>\t"
 	$(call white,hello white text)
-	@echo -n $$\(call magenta,hello magenta text\) =\>\\t
+	@echo -e -n "\$$(call magenta,hello magenta text)\t=>\t"
 	$(call magenta,hello magenta text)
-	@echo -n $$\(call cyan,hello cyan text\) =\>\\t
+	@echo -e -n "\$$(call cyan,hello cyan text)\t\t=>\t"
 	$(call cyan,hello cyan text)
-	@echo -n $$\(call yellow,hello yellow text\) =\>\\t
+	@echo -e -n "\$$(call yellow,hello yellow text)\t=>\t"
 	$(call yellow,hello yellow text)
+	
 
 define resetColor
 	@bash -c 'echo -e "\e[m"'
@@ -52,3 +56,4 @@ define white
 	@bash -c 'echo -e "\e[37m"$1$2$3$4$5$6$7$8$9"\e[m"'
 endef
 
+endif # color-included
