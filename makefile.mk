@@ -4,16 +4,15 @@ makefile-included=1
 .PHONY: makefile-default
 
 makefile-default: makefile-allinone.txt
-	cat $<
 
 define include_once
   $(info include_once $1.mk)
   ifndef $1-included
   include $1.mk
   endif
-  $(info $$1 = $1)
 endef
 
+$(eval $(call include_once,color))
 $(eval $(call include_once,diff))
 $(eval $(call include_once,diskpart))
 $(eval $(call include_once,git))
