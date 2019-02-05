@@ -1,3 +1,9 @@
+ifndef find-included
+find-included=1
+.PHONY: find-default
+find-default: cd.files
+	@test -s $@
+
 %.find: %.dir %.prune
 	echo -n find \"`cat $(firstword $^)`\"\  | tee $@ 
 	cat "$(lastword $^)" \
@@ -17,4 +23,10 @@ cd.dir:
 	pwd | tr -d '\n\r\t' >$@
 	grep '^/' $@ 
 	test -s $@
+
+
+home.files:
+	find ~ -type f >$@
+
+endif # find-included
 
