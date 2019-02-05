@@ -7,6 +7,7 @@ md5-default: cd.md5s
 SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 include $(SELF_DIR)xargs.mk
 include $(SELF_DIR)clean.mk
+include $(SELF_DIR)builtin.mk
 
 %.md5s: %.files
 	cat $< | ($(XARGS) -L1 -I{} md5sum {}) >$@
