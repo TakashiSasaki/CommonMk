@@ -17,5 +17,15 @@ cd.files:
 %.ldjson: %.md5s
 	cat $< 	| jq -R -c 'split("  ")|{"md5":.[0],"path":.[1]}' >$@
 
+%.mk: %.md5s
+	echo ".PHONY: default all" >$@
+	echo "default: all" >>$@
+	cat $< | sed -n -r -e "s/^([0-9a-f]+)[ ]+(.+)$$/\1 : \2\n\tcp -R $$< $$\@\n\techo -n $$< >$$\@.path\n/p" >>$@
+	echo "" >>$@
+	echo "all : \\" >>$@
+	cat $< | sed -n -r -e "s/^([0-9a-f]+) .+/\t\1\\\/p" >>$@
+	echo "" >>$@
+
+
 endif # md5-included
 
