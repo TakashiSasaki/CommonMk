@@ -9,6 +9,8 @@ all-vhd.winpaths
 all-vhd.winpaths.d/
 all-vhd.winpaths.utf8
 all.githash
+cd.files
+cd.md5s
 cd.winpath
 cd.winpath.escaped
 cd.winpath.sjis
@@ -24,6 +26,10 @@ cscript.sjis
 cscript.utf8
 date.shellexecute.stdout
 date.shellexecute.utf8
+drives-c.dir
+drives-c.files
+drives-c.find
+drives-c.prune
 filelist
 filelist.bigram
 filelist.locate02
@@ -184,5 +190,3 @@ whoami.user.utf16le
 whoami.user.utf8
 x.winpath.utf8
 x.winpath.utf8.multiline
-cd.files
-cd.md5s
