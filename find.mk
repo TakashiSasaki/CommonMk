@@ -1,8 +1,10 @@
 ifndef find-included
 find-included=1
+find-default: cd.files drives-c.files
 .DELETE_ON_ERROR:
 .PHONY: find-default
-find-default: cd.files drives-c.files
+SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
+include $(SELF_DIR)clean.mk
 
 %.prune-tmp: %.prune
 	cat "$(lastword $^)" \
