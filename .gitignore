@@ -1,6 +1,7 @@
 *.n
 *.swp
 *.updatedb
+4e27831f1ec9a90ee36689f09166bc84.random
 LOCATE02/
 ShellExecute.js
 all-vhd.cygpaths
@@ -30,6 +31,7 @@ drives-c.dir
 drives-c.files
 drives-c.find
 drives-c.prune
+f5d8705c09b04d0a4b4ce80b166e91f8.random
 filelist
 filelist.bigram
 filelist.locate02
