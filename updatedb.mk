@@ -1,25 +1,36 @@
-.PHONY: all
+ifndef updatedb-included
+updatedb-included=1
+
+.PHONY: updatedb-default
 .SUFFIXES: .slocate .locate02 .locate-sorted .locate-bigrams .locate-old
 .DELETE_ON_ERROR:
+
+updatedb-default: home.locate02 
+	locate -d $< / | head -n 5
+
+SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
+ifndef find-included
+include $(SELF_DIR)find.mk
+endif
+
+#home.files:
+#	find ~ -type f >$@
+
 FRCODE=/usr/libexec/frcode
 BIGRAM=/usr/libexec/bigram
 CODE=/usr/libexec/code
 UPDATEDB=/usr/bin/updatedb
 
-all: updatedb.slocate updatedb.locate02 updatedb.locate-old
-	locate -d $(word 3,$^) /
-	locate -d $(word 2,$^) /
-	locate -e -d $(word 1,$^) /
 
-%.slocate: %.txt
+%.slocate: %.files
 	cat $< | tr '\n' '\0' | sort -z -f | ${FRCODE} -0 -S 1 > $@
 	test -s $@
 
-%.locate02: %.txt 
+%.locate02: %.files
 	cat $< | tr '\n' '\0' | sort -z -f | ${FRCODE} -0 > $@
 	test -s $@
 
-%.locate-sorted: %.txt
+%.locate-sorted: %.files
 	cat $< | tr /  '\001' | sort -f | tr '\001' / > $@
 	test -s $@
 
@@ -30,4 +41,6 @@ all: updatedb.slocate updatedb.locate02 updatedb.locate-old
 %.locate-old: %.locate-bigrams %.locate-sorted
 	cat $(lastword $^) | ${CODE} $(firstword $^) > $@
 	test -s $@
+
+endif # updatedb-included
 

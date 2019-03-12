@@ -1,3 +1,7 @@
+.PHONY: xargs-default
+xargs-default:
+	@echo XARGS = $(XARGS)
+
 ifndef xargs-included
 xargs-included=1
 

@@ -1,6 +1,7 @@
 *.n
 *.swp
 *.updatedb
+4e27831f1ec9a90ee36689f09166bc84.random
 LOCATE02/
 ShellExecute.js
 all-vhd.cygpaths
@@ -9,6 +10,8 @@ all-vhd.winpaths
 all-vhd.winpaths.d/
 all-vhd.winpaths.utf8
 all.githash
+cd.files
+cd.md5s
 cd.winpath
 cd.winpath.escaped
 cd.winpath.sjis
@@ -24,6 +27,11 @@ cscript.sjis
 cscript.utf8
 date.shellexecute.stdout
 date.shellexecute.utf8
+drives-c.dir
+drives-c.files
+drives-c.find
+drives-c.prune
+f5d8705c09b04d0a4b4ce80b166e91f8.random
 filelist
 filelist.bigram
 filelist.locate02
@@ -40,7 +48,11 @@ icacls.help.utf8
 icacls.sjis
 icacls.txt
 icacls.utf8
+list-all-disk.diskpart
+list-all-disk.diskpart.runas.stdout
+list-all-disk.diskpart.utf8
 list-vdisk.diskpart.runas.stdout
+list-vdisk.diskpart.runas.utf16le
 list-vdisk.diskpart.runas.utf8
 list-vdisk.diskpart.sjis
 list-vdisk.diskpart.utf8
@@ -74,6 +86,7 @@ make.unsearched.txt
 make.unsearched.txt.except
 make.unsearched.txt.sorted
 make/
+makefile-allinone.txt
 old/
 runas.js
 slocate/
@@ -93,12 +106,17 @@ takeown.utf16le
 takeown.utf8
 test.attach-vdisk.diskpart.sjis
 test.attach-vdisk.diskpart.utf8
+test.both
 test.cygpaths
 test.input
 test.input.utf16le
 test.js
+test.left
+test.leftonly
 test.output
 test.output'
+test.right
+test.rightonly
 test.sjis
 test.utf8
 test.winpath
