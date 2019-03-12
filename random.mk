@@ -1,10 +1,16 @@
+ifndef random-included
+random-included=1
+
+SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
+include $(SELF_DIR)find.mk
+
 .DEFAULT_GOAL=init-random-file
 tmprnd:=$(shell mktemp)
 define check-random-file
 	$(info function check-random-file start)
-	$(eval random-file:=$(shell ls -l | sed -r -n -e 's/.+ .+ .+ .+ .+ .+ .+ ([0-9a-fA-F]{40}.random)$$/\1/p'))
-	$(info found $(random-file))
-	$(if $(word 2,$(random-file)),$(error Two or more random files))
+	$(eval random-file-base:=$(shell ls -l | sed -r -n -e 's/.+ .+ .+ .+ .+ .+ .+ ([0-9a-fA-F]{40}).random$$/\1/p'))
+	$(info found $(random-file-base).random)
+	$(if $(word 2,$(random-file-base)),$(error Two or more random files))
 	$(info function check-random-file end)
 endef
 	
@@ -12,14 +18,8 @@ define create-random-file
 	$(info function create-random-file start)
 	dd if=/dev/random bs=4096 count=1 of=$(tmprnd)
 	test -s $(tmprnd)
-	mv $(tmprnd) `git hash-object $(tmprnd)`.random
+	cp -i $(tmprnd) `git hash-object $(tmprnd)`.random
 	$(info function create-random-file end)
-endef
-
-define init-random-file
-	$(call check-random-file)
-	$(if $(random-file),,$(call create-random-file))
-	$(call check-random-file)
 endef
 
 .PHONY: check-random-file
@@ -36,11 +36,14 @@ create-random-file:
 init-random-file:
 	$(info target init-random-file start)
 	$(call check-random-file)
-	$(if $(random-file),,$(call create-random-file))
+	$(if $(random-file-base),,$(call create-random-file))
 	$(info target init-random-file end)
-	git hash-object $(random-file)
+	git hash-object $(random-file-base).random
 
 .PHONY: delete-random-file
 delete-random-file:
 	$(call check-random-file)
-	-rm $(random-file)
+	-rm $(random-file-base).random
+
+endif # random-included
+
