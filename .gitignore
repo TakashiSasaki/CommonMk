@@ -1,6 +1,13 @@
 *.n
 *.swp
 *.updatedb
+3d700521dce8a54064caa0adcd3a3fefd6dde0df.dir
+3d700521dce8a54064caa0adcd3a3fefd6dde0df.dirs
+3d700521dce8a54064caa0adcd3a3fefd6dde0df.files
+3d700521dce8a54064caa0adcd3a3fefd6dde0df.hostname
+3d700521dce8a54064caa0adcd3a3fefd6dde0df.ipaddress
+3d700521dce8a54064caa0adcd3a3fefd6dde0df.macaddress
+3d700521dce8a54064caa0adcd3a3fefd6dde0df.prune
 LOCATE02/
 ShellExecute.js
 all-vhd.cygpaths
@@ -9,6 +16,8 @@ all-vhd.winpaths
 all-vhd.winpaths.d/
 all-vhd.winpaths.utf8
 all.githash
+cd.dir
+cd.dirs
 cd.files
 cd.md5s
 cd.winpath
@@ -27,7 +36,9 @@ cscript.utf8
 date.shellexecute.stdout
 date.shellexecute.utf8
 drives-c.dir
+drives-c.dirs
 drives-c.files
+drives-c.files.find
 drives-c.find
 drives-c.prune
 f5d8705c09b04d0a4b4ce80b166e91f8.random
@@ -40,6 +51,8 @@ filelist.old.updatedb
 filelist.slocate
 filelist.slocate.updatedb
 filelist.trsorttr
+home.dirs
+home.files
 icacls-help.sjis
 icacls-help.utf8
 icacls.help.sjis
@@ -191,6 +204,3 @@ whoami.user.utf16le
 whoami.user.utf8
 x.winpath.utf8
 x.winpath.utf8.multiline
-3d700521dce8a54064caa0adcd3a3fefd6dde0df.ipaddress
-3d700521dce8a54064caa0adcd3a3fefd6dde0df.macaddress
-3d700521dce8a54064caa0adcd3a3fefd6dde0df.hostname
