@@ -16,6 +16,12 @@ define create-random-file
 	$(info function create-random-file end)
 endef
 
+define init-random-file
+	$(call check-random-file)
+	$(if $(random-file),,$(call create-random-file))
+	$(call check-random-file)
+endef
+
 .PHONY: check-random-file
 check-random-file:
 	$(info target check-random-file)
