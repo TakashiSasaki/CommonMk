@@ -1,5 +1,5 @@
 .PHONY: git-show-ignored git-fetch-from all.githash 
-
+.DEFAULT_GOAL:=git-config
 ifdef GIT_DIR
 $(error Environment variable GIT_DIR may cause unexpected result.)
 endif
@@ -12,6 +12,7 @@ all.githash:
 	cat $< | xargs -n 1 git ls-tree -l -r --full-tree| tee  $@
 	test -s $@
 
+.PHONY: git-config
 git-config:
 	git config core.autocrlf input
 	git config core.file true
