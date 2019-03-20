@@ -6,7 +6,19 @@ make-included=1
 .DEFAULT_GOAL:=make-default
 
 .PHONY: make-default
-make-default: \
+make-default::
+	git clean -qfdx *.mk.*.except
+	git clean -qfdx *.mk.automatic
+	git clean -qfdx *.mk.debug
+	git clean -qfdx *.mk.default
+	git clean -qfdx *.mk.implicit
+	git clean -qfdx *.mk.makefile
+	git clean -qfdx *.mk.phony
+	git clean -qfdx *.mk.searched
+	git clean -qfdx *.mk.unsearched
+
+make-default:: \
+	$(patsubst %.mk,%.mk.debug,$(wildcard *.mk)) \
 	$(patsubst %.mk,%.mk.automatic,$(wildcard *.mk)) \
 	$(patsubst %.mk,%.mk.environment,$(wildcard *.mk)) \
 	$(patsubst %.mk,%.mk.default,$(wildcard *.mk)) \
