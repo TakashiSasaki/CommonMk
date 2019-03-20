@@ -1,11 +1,13 @@
 SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 $(info $(MAKEFILE_LIST))
+
 $(info $(SELF_DIR))
 include $(SELF_DIR)iconv.mk
-.PHONY: shellexecute.mk
-.DEFAULT_GOAL=shellexecute.mk
 
-shellexecute.mk: \
+.DEFAULT_GOAL:=shellexecute-default
+
+.PHONY: shellexecute-default
+shellexecute-default: \
 	whoami-user.shellexecute.stdout \
 	whoami-groups.shellexecute.stdout \
 	whoami-priv.shellexecute.stdout 
@@ -41,7 +43,8 @@ shellexecute.js:
 
 
 %.shellexecute.stdout: %.shellexecute.utf16le shellexecute.js
-	-rm $@
+	$(info making $@)
+	@-rm $@
 	cscript //nologo $(lastword $^) $< >$@
 	sleep 1
 	test -s $@	
