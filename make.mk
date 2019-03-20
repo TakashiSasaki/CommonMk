@@ -1,8 +1,11 @@
 #!/bin/make -f 
 ifndef make-included
-make-included=1
+make-included:=1
 
-.SUFFIXES: .txt
+SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
+include $(SELF_DIR)builtin.mk
+
+#.SUFFIXES: .txt
 .DEFAULT_GOAL:=make-default
 
 .PHONY: make-default
