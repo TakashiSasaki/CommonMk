@@ -1,7 +1,10 @@
 ifndef iconv-included
+iconv-included:=1
+
 .PHONY: iconv-default
-iconv-included=1
+.DEFAULT_GOAL:=iconv-default
 iconv-default: 
+	@echo No default target in iconv.mk.
 
 %.utf8: %.sjis
 	$(if $<,,$(error %.sjis is not given))
