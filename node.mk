@@ -1,3 +1,12 @@
+#!/bin/make -f
+ifndef node-included
+node-included:=1
+
+.DEFAULT_GOAL:=node-default
+.PHONY: node-default
+node-default:
+	$(info No default target in node.mk)
+
 export OSTYPE=$(shell echo $$OSTYPE)
 
 
@@ -24,4 +33,6 @@ endif
 $(info NODE : $(NODE))
 $(info NPM : $(NPM))
 $(info NPX : $(NPX))
+
+endif # node-included
 
