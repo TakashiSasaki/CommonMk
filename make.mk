@@ -38,10 +38,11 @@ make-default:: \
 	-LC_ALL=C $(MAKE) -n -f $< -p -d >$@
 
 %.mk.automatic %.mk.automatic.except: %.mk.debug
+	$(info remaking $@)
 	@cat $< | sed -n -r \
 		-e ': begin' \
-		-e '/^# automatic.*/{' \
-		-e ' hn/^[^# \t].+/{' \
+		-e '/^# automatic.*$$/{' \
+		-e ' hn/^[^# \t].+$$/{' \
 		-e '  pnb begin'\
 		-e ' }' \
 		-e ' Gw $(patsubst %.except,%,$@).except' \
@@ -49,10 +50,11 @@ make-default:: \
 		-e 'w $(patsubst %.except,%,$@).except' >$(patsubst %.except,%,$@)
 
 %.mk.environment %.mk.environment.except: %.mk.automatic.except
+	$(info remaking $@)
 	@cat $< | sed -n -r \
 		-e ': begin' \
-		-e '/^# environment.*/{' \
-		-e ' hn/^[^# \t].+/{' \
+		-e '/^# environment.*$$/{' \
+		-e ' hn/^[^# \t].+$$/{' \
 		-e '  pnb begin'\
 		-e ' }' \
 		-e ' Gw $(patsubst %.except,%,$@).except' \
