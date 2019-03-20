@@ -1,3 +1,4 @@
+#!/bin/make -f
 ifndef clean-included
 clean-included=1
 .PHONY: clean
