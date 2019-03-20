@@ -7,6 +7,7 @@ builtin-included=1
 %: RCS/%
 %: s.%
 %: %.sh
+%: %,v
 
 endif # builtin-included
 
