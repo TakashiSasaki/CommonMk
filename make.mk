@@ -1,75 +1,73 @@
+#!/bin/make -f 
 ifndef make-included
 make-included=1
 
-.PHONY: make-default
 .SUFFIXES: .txt
+.DEFAULT_GOAL:=make-default
 
-make-default: make.all.txt
+.PHONY: make-default
+make-default: \
+	$(patsubst %.mk,%.mk.automatic,$(wildcard *.mk)) \
+	$(patsubst %.mk,%.mk.environment,$(wildcard *.mk)) \
+	$(patsubst %.mk,%.mk.default,$(wildcard *.mk)) \
+	$(patsubst %.mk,%.mk.makefile,$(wildcard *.mk)) \
+	$(patsubst %.mk,%.mk.implicit,$(wildcard *.mk)) \
+	$(patsubst %.mk,%.mk.phony,$(wildcard *.mk)) \
+	$(patsubst %.mk,%.mk.searched,$(wildcard *.mk)) \
+	$(patsubst %.mk,%.mk.unsearched,$(wildcard *.mk)) \
 
-make.txt:
-	$(info Run make with -p option by yourself with LC_ALL=C .)
-	$(info Example: LC_ALL=C make -B -n -r -R -p -d)
-	-LC_ALL=C $(MAKE) -B -n -r -R -p -d >make.txt
+%.mk.debug: %.mk
+	#-LC_ALL=C $(MAKE) -n -f $< -r -R -p -d >$@
+	# -r : no builtin rules
+	# -R : no builtin variables
+	-LC_ALL=C $(MAKE) -n -f $< -p -d >$@
 
-make.automatic.txt: make.txt
-	cat $< | sed -n -r \
+%.mk.automatic %.mk.automatic.except: %.mk.debug
+	@cat $< | sed -n -r \
 		-e ': begin' \
 		-e '/^# automatic.*/{' \
 		-e ' hn/^[^# \t].+/{' \
 		-e '  pnb begin'\
 		-e ' }' \
-		-e ' Gw $@.except' \
+		-e ' Gw $(patsubst %.except,%,$@).except' \
 		-e '}' \
-		-e 'w $@.except' \
-		| tee $@
+		-e 'w $(patsubst %.except,%,$@).except' >$(patsubst %.except,%,$@)
 
-make.automatic.txt.except: make.automatic.txt
-
-make.environment.txt: make.automatic.txt.except
-	cat $< | sed -n -r \
+%.mk.environment %.mk.environment.except: %.mk.automatic.except
+	@cat $< | sed -n -r \
 		-e ': begin' \
 		-e '/^# environment.*/{' \
 		-e ' hn/^[^# \t].+/{' \
 		-e '  pnb begin'\
 		-e ' }' \
-		-e ' Gw $@.except' \
+		-e ' Gw $(patsubst %.except,%,$@).except' \
 		-e '}' \
-		-e 'w $@.except' \
-		| tee $@
+		-e 'w $(patsubst %.except,%,$@).except' >$(patsubst %.except,%,$@)
 
-make.environment.txt.except: make.environment.txt
-
-
-make.default.txt: make.environment.txt.except
-	cat $< | sed -n -r \
+%.mk.default %.mk.default.except: %.mk.environment.except
+	@cat $< | sed -n -r \
 		-e ': begin' \
 		-e '/^# default.*/{' \
 		-e ' hn/^[^# \t].+/{' \
 		-e '  pnb begin'\
 		-e ' }' \
-		-e ' Gw $@.except' \
+		-e ' Gw $(patsubst %.except,%,$@).except' \
 		-e '}' \
-		-e 'w $@.except' \
-		| tee $@
+		-e 'w $(patsubst %.except,%,$@).except' >$(patsubst %.except,%,$@)
 
-make.default.txt.except: make.default.txt
-
-make.makefile.txt: make.default.txt.except
-	cat $< | sed -n -r \
+%.mk.makefile %.mk.makefile.except: %.mk.default.except
+	@cat $< | sed -n -r \
 		-e ': begin' \
 		-e '/^# makefile.*/{' \
 		-e ' hn/^[^# \t].+/{' \
 		-e '  pnb begin'\
 		-e ' }' \
-		-e ' Gw $@.except' \
+		-e ' Gw $(patsubst %.except,%,$@).except' \
 		-e '}' \
-		-e 'w $@.except' \
-		| tee $@
+		-e 'w $(patsubst %.except,%,$@).except' >$(patsubst %.except,%,$@)
 
-make.makefile.txt.except: make.makefile.txt
-
-make.implicit.txt: make.makefile.txt.except
-	cat $< | sed -n -r \
+%.mk.implicit %.mk.implicit.except: %.mk.makefile.except
+	@cat $< | sed -n -r \
 		-e ': begin' \
 		-e '/^# Implicit Rules/{' \
 		-e ' : loop' \
@@ -77,13 +75,10 @@ make.implicit.txt: make.makefile.txt.except
 		-e ' n/^[^# \t].+/p' \
 		-e ' b loop' \
 		-e '}' \
-		-e 'w $@.except' \
-		| tee $@
+		-e 'w $(patsubst %.except,%,$@).except' >$(patsubst %.except,%,$@)
 
-make.implicit.txt.except: make.implicit.txt
-
-make.phony.txt: make.implicit.txt.except
-	cat $< | sed -n -r \
+%.mk.phony %.mk.phony.except: %.mk.implicit.except
+	@cat $< | sed -n -r \
 		-e ': begin' \
 		-e '/^#  Phony target.+/{' \
 		-e ' xpx' \
@@ -93,13 +88,10 @@ make.phony.txt: make.implicit.txt.except
 		-e ' }' \
 		-e ' b begin' \
 		-e '}' \
-		-e 'xw $@.except' \
-		| tee $@
+		-e 'xw $(patsubst %.except,%,$@).except' >$(patsubst %.except,%,$@)
 
-make.phony.txt.except: make.phony.txt
-
-make.searched.txt: make.phony.txt.except
-	cat $< | sed -n -r \
+%.mk.searched %.mk.searched.except: %.mk.phony.except
+	@cat $< | sed -n -r \
 		-e ': begin' \
 		-e '/^#  Implicit rule search has not been done.+/{' \
 		-e ' xpx' \
@@ -109,13 +101,10 @@ make.searched.txt: make.phony.txt.except
 		-e ' }' \
 		-e ' b begin' \
 		-e '}' \
-		-e 'xw $@.except' \
-		| tee $@
+		-e 'xw $(patsubst %.except,%,$@).except' >$(patsubst %.except,%,$@)
 
-make.searched.txt.except: make.searched.txt
-
-make.unsearched.txt: make.searched.txt.except
-	cat $< | sed -n -r \
+%.mk.unsearched %.mk.unsearched.except: %.mk.searched.except
+	@cat $< | sed -n -r \
 		-e ': begin' \
 		-e '/^#  Implicit rule search has been done.+/{' \
 		-e ' xpx' \
@@ -125,36 +114,33 @@ make.unsearched.txt: make.searched.txt.except
 		-e ' }' \
 		-e ' b begin' \
 		-e '}' \
-		-e 'xw $@.except' \
-		| tee $@
+		-e 'xw $(patsubst %.except,%,$@).except' >$(patsubst %.except,%,$@)
 
-make.unsearched.txt.except: make.unsearched.txt
-
-make.%.txt.sorted: make.%.txt
-	sort -u <$< >$@
-
-make.all.txt: \
-	make.automatic.txt.sorted \
-	make.environment.txt.sorted \
-	make.default.txt.sorted \
-	make.implicit.txt.sorted \
-	make.phony.txt.sorted \
-	make.searched.txt.sorted \
-	make.unsearched.txt.sorted
-	echo "# automatic variables" >$@
-	cat $(word 1,$^) >>$@
-	echo "# environment varibles" >>$@
-	cat $(word 2,$^) >>$@
-	echo "# default variables" >>$@
-	cat $(word 3,$^) >>$@
-	echo "# Implicit Rules" >>$@
-	cat $(word 4,$^) >>$@
-	echo "# Phony targets" >>$@
-	cat $(word 5,$^) >>$@
-	echo "# Targets with implicit rule search" >>$@
-	cat $(word 6,$^) >>$@
-	echo "# Targets without implicit rule search" >>$@
-	cat $(word 7,$^) >>$@
+# make.%.txt.sorted: make.%.txt
+# 	sort -u <$< >$@
+# 
+# make.all.txt: \
+# 	make.automatic.txt.sorted \
+# 	make.environment.txt.sorted \
+# 	make.default.txt.sorted \
+# 	make.implicit.txt.sorted \
+# 	make.phony.txt.sorted \
+# 	make.searched.txt.sorted \
+# 	make.unsearched.txt.sorted
+# 	echo "# automatic variables" >$@
+# 	cat $(word 1,$^) >>$@
+# 	echo "# environment varibles" >>$@
+# 	cat $(word 2,$^) >>$@
+# 	echo "# default variables" >>$@
+# 	cat $(word 3,$^) >>$@
+# 	echo "# Implicit Rules" >>$@
+# 	cat $(word 4,$^) >>$@
+# 	echo "# Phony targets" >>$@
+# 	cat $(word 5,$^) >>$@
+# 	echo "# Targets with implicit rule search" >>$@
+# 	cat $(word 6,$^) >>$@
+# 	echo "# Targets without implicit rule search" >>$@
+# 	cat $(word 7,$^) >>$@
 
 endif # make-included
 
