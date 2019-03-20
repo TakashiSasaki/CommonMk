@@ -29,12 +29,12 @@ make-default:: \
 	$(patsubst %.mk,%.mk.implicit,$(wildcard *.mk)) \
 	$(patsubst %.mk,%.mk.phony,$(wildcard *.mk)) \
 	$(patsubst %.mk,%.mk.searched,$(wildcard *.mk)) \
-	$(patsubst %.mk,%.mk.unsearched,$(wildcard *.mk)) \
+	$(patsubst %.mk,%.mk.unsearched,$(wildcard *.mk))
 
 %.mk.debug: %.mk
-	#-LC_ALL=C $(MAKE) -n -f $< -r -R -p -d >$@
-	# -r : no builtin rules
-	# -R : no builtin variables
+	@#-LC_ALL=C $(MAKE) -n -f $< -r -R -p -d >$@
+	@# -r : no builtin rules
+	@# -R : no builtin variables
 	-LC_ALL=C $(MAKE) -n -f $< -p -d >$@
 
 %.mk.automatic %.mk.automatic.except: %.mk.debug
