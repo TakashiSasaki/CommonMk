@@ -1,8 +1,15 @@
-.PHONY: git-show-ignored git-fetch-from all.githash 
-.DEFAULT_GOAL:=git-config
+#!/bin/make -f 
+ifndef git-included
+git-included=1
+
 ifdef GIT_DIR
 $(error Environment variable GIT_DIR may cause unexpected result.)
 endif
+
+.DEFAULT_GOAL=git-default
+.PHONY: git-default
+git-default:
+	@echo No default target
 
 all.githash:
 	git rev-parse --all | sort -u | tee $@
@@ -30,13 +37,17 @@ git-check-attr-at:
 	read -e -p "check attributes at : " DIRECTORY ;\
 	find "$${DIRECTORY}" | git check-attr --stdin -a
 
+.PHONY: git-show-ignored
 git-show-ignored:
 	git status --ignored
 
+.PHONY: git-fetch-from
 git-fetch-from:
 	read -e -p "fetch from : " DIRECTORY ; \
 	git fetch --dry-run "$${DIRECTORY}"
 
 git-ignore-untracked:
 	git status -s -u | sed -n -r -e 's/^\?\? (.+)/\1/p' | tee -a .gitignore
+
+endif # git-included
 
