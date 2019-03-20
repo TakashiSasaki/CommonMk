@@ -62,6 +62,7 @@ make-default:: \
 		-e 'w $(patsubst %.except,%,$@).except' >$(patsubst %.except,%,$@)
 
 %.mk.default %.mk.default.except: %.mk.environment.except
+	$(info remaking $@)
 	@cat $< | sed -n -r \
 		-e ': begin' \
 		-e '/^# default.*/{' \
@@ -73,6 +74,7 @@ make-default:: \
 		-e 'w $(patsubst %.except,%,$@).except' >$(patsubst %.except,%,$@)
 
 %.mk.makefile %.mk.makefile.except: %.mk.default.except
+	$(info remaking $@)
 	@cat $< | sed -n -r \
 		-e ': begin' \
 		-e '/^# makefile.*/{' \
@@ -84,6 +86,7 @@ make-default:: \
 		-e 'w $(patsubst %.except,%,$@).except' >$(patsubst %.except,%,$@)
 
 %.mk.implicit %.mk.implicit.except: %.mk.makefile.except
+	$(info remaking $@)
 	@cat $< | sed -n -r \
 		-e ': begin' \
 		-e '/^# Implicit Rules/{' \
@@ -95,6 +98,7 @@ make-default:: \
 		-e 'w $(patsubst %.except,%,$@).except' >$(patsubst %.except,%,$@)
 
 %.mk.phony %.mk.phony.except: %.mk.implicit.except
+	$(info remaking $@)
 	@cat $< | sed -n -r \
 		-e ': begin' \
 		-e '/^#  Phony target.+/{' \
@@ -108,6 +112,7 @@ make-default:: \
 		-e 'xw $(patsubst %.except,%,$@).except' >$(patsubst %.except,%,$@)
 
 %.mk.searched %.mk.searched.except: %.mk.phony.except
+	$(info remaking $@)
 	@cat $< | sed -n -r \
 		-e ': begin' \
 		-e '/^#  Implicit rule search has not been done.+/{' \
@@ -121,6 +126,7 @@ make-default:: \
 		-e 'xw $(patsubst %.except,%,$@).except' >$(patsubst %.except,%,$@)
 
 %.mk.unsearched %.mk.unsearched.except: %.mk.searched.except
+	$(info remaking $@)
 	@cat $< | sed -n -r \
 		-e ': begin' \
 		-e '/^#  Implicit rule search has been done.+/{' \
