@@ -9,9 +9,9 @@ include $(SELF_DIR)clean.mk
 .DEFAULT_GOAL:=find-default
 
 %.prune.tmp: %.prune
-	cat "$(lastword $^)" \
+	cat $< \
 	| sed -n  -r -e '/^.+/i -path "' -e '/^.+/p' -e '/^.+/a " -prune -o ' -e '$$a -print' \
-	| tee $@
+	>$@
 
 %.dirs.tmp: %.dir
 	echo find \"`cat $(firstword $^)`\"\ -type d \ >$@ 
