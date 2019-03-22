@@ -1,26 +1,49 @@
+#!/bin/make -f
 ifndef updatedb-included
 updatedb-included=1
 
-.PHONY: updatedb-default
-.SUFFIXES: .slocate .locate02 .locate-sorted .locate-bigrams .locate-old
-.DELETE_ON_ERROR:
-
-updatedb-default: home.locate02 
-	locate -d $< / | head -n 5
-
 SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 ifndef find-included
-include $(SELF_DIR)find.mk
+  $(info including $(SERLF_DIR)find.mk)
+  include $(SELF_DIR)find.mk
 endif
+
+
+.SUFFIXES: .slocate .locate02 .locate-sorted .locate-bigrams .locate-old
+.DELETE_ON_ERROR:
+.DEFAULT_GOAL:=updatedb-test
+
+.PHONY: updatedb-default
+#updatedb-default: home.locate02 
+updatedb-default:
+	@#locate -d $< / | head -n 5
+	@echo No default target in updatedb.mk
 
 #home.files:
 #	find ~ -type f >$@
 
-FRCODE=/usr/libexec/frcode
-BIGRAM=/usr/libexec/bigram
-CODE=/usr/libexec/code
-UPDATEDB=/usr/bin/updatedb
+FRCODE:=$(shell which frcode)
+FRCODE:=$(if $(FRCODE),$(FRCODE),$(wildcard /usr/libexec/frcode*))
+FRCODE:=$(if $(FRCODE),$(FRCODE),/usr/libexec/frcode)
+$(info FRCODE=$(FRCODE))
 
+BIGRAM:=$(shell which bigram)
+BIGRAM:=$(if $(BIGRAM),$(BIGRAM),$(wildcard /usr/libexec/bigram*))
+BIGRAM:=$(if $(BIGRAM),$(BIGRAM),/usr/libexec/bigram)
+$(info BIGRAM=$(BIGRAM))
+
+CODE:=$(shell which code)
+CODE:=$(if $(CODE),$(CODE),$(wildcard /usr/libexec/code*))
+CODE:=$(if $(CODE),$(CODE),/usr/libexec/code)
+$(info CODE=$(CODE))
+
+UPDATEDB:=$(shell which updatedb)
+UPDATEDB:=$(if $(UPDATEDB),$(UPDATEDB),$(wildcard /usr/bin/updatedb*))
+UPDATEDB:=$(if $(UPDATEDB),$(UPDATEDB),/usr/bin/updatedb)
+$(info UPDATEDB=$(UPDATEDB))
+
+.PHONY: updatedb-test
+updatedb-test: cd.locate02
 
 %.slocate: %.files
 	cat $< | tr '\n' '\0' | sort -z -f | ${FRCODE} -0 -S 1 > $@
@@ -40,6 +63,13 @@ UPDATEDB=/usr/bin/updatedb
 
 %.locate-old: %.locate-bigrams %.locate-sorted
 	cat $(lastword $^) | ${CODE} $(firstword $^) > $@
+	test -s $@
+
+%.githash: %.paths
+	cat $< | xargs -n 1 git hash-object 2>&1| tee $@
+
+%.frcode: %.urls
+	cat $< | sort | uniq | ${FRCODE} >$@
 	test -s $@
 
 endif # updatedb-included
