@@ -31,6 +31,7 @@ all.githash
 cd.dir
 cd.dirs
 cd.files
+cd.files.md5
 cd.locate02
 cd.md5s
 cd.winpath
