@@ -6,6 +6,9 @@ ifdef GIT_DIR
 $(error Environment variable GIT_DIR may cause unexpected result.)
 endif
 
+current-git-branch:=$(shell git branch | sed -n -r -e "s/^\* (.+)$$/\1/p")
+$(info current git branch = $(current-git-branch))
+
 .DEFAULT_GOAL=git-default
 .PHONY: git-default
 git-default:
@@ -48,9 +51,6 @@ git-fetch-from:
 
 git-ignore-untracked:
 	git status -s -u | sed -n -r -e 's/^\?\? (.+)/\1/p' | tee -a .gitignore
-
-current-git-branch:=$(shell git branch | sed -n -r -e "s/^\* (.+)$$/\1/p")
-$(info current git branch = $(current-git-branch))
 
 global.gitconfig: FORCE
 	$(eval tmp-git-config:=$(shell mktemp))
