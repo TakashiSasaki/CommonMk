@@ -1,8 +1,10 @@
 ifndef diskpart-included
-diskpart-included=1
+diskpart-included:=1
 
-.PHONY: diskpart-default diskpart-test mount-all list-all-vhd list-vdisk list-all-disk
+.PHONY: diskpart-test mount-all list-all-vhd list-vdisk list-all-disk
 
+.DEFAULT_GOAL:=diskpart-default
+.PHONY: diskpart-default
 diskpart-default: diskpart-test list-all-vhd
 
 
@@ -31,7 +33,7 @@ list-all-disk.diskpart.utf8:
 	cat $@
 
 all-vhd.cygpaths.utf8:
-	-rm $@
+	@-rm $@
 	for x in /drives/?/*.vhd; do echo $$x; done >>$@
 	for x in `cygpath -u '$(USERPROFILE)'`/*/*.vhd; do echo $$x ; done >>$@
 	cat $@
@@ -78,3 +80,4 @@ define uniq =
 endef
 
 endif # diskpart-included
+

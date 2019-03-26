@@ -1,9 +1,11 @@
 ifndef winpath-included
-winpath-included=1
+winpath-included:=1
 $(info winpath.mk)
 
+.DEFAULT_GOAL:=winpath-default
 .PHONY: winpath-default
 winpath-default:
+	@echo No default target in winpath.mk.
 
 SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 ifndef xargs-included

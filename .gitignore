@@ -1,3 +1,14 @@
+*.mk.*.except
+*.mk.automatic
+*.mk.debug
+*.mk.default
+*.mk.environment
+*.mk.except
+*.mk.implicit
+*.mk.makefile
+*.mk.phony
+*.mk.searched
+*.mk.unsearched
 *.n
 *.swp
 *.updatedb
