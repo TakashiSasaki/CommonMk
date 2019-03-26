@@ -63,6 +63,7 @@ filelist.old.updatedb
 filelist.slocate
 filelist.slocate.updatedb
 filelist.trsorttr
+global.gitconfig
 home.dirs
 home.files
 icacls-help.sjis
@@ -80,6 +81,7 @@ list-vdisk.diskpart.runas.utf16le
 list-vdisk.diskpart.runas.utf8
 list-vdisk.diskpart.sjis
 list-vdisk.diskpart.utf8
+local.gitconfig
 make.all.txt
 make.automatic.txt
 make.automatic.txt.except
@@ -114,6 +116,7 @@ makefile-allinone.txt
 old/
 runas.js
 slocate/
+system.gitconfig
 takeown-help.sjis
 takeown-help.utf8
 takeown-me.sjis

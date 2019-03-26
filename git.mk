@@ -1,6 +1,6 @@
 #!/bin/make -f 
 ifndef git-included
-git-included=1
+git-included:=1
 
 ifdef GIT_DIR
 $(error Environment variable GIT_DIR may cause unexpected result.)
@@ -48,6 +48,33 @@ git-fetch-from:
 
 git-ignore-untracked:
 	git status -s -u | sed -n -r -e 's/^\?\? (.+)/\1/p' | tee -a .gitignore
+
+current-git-branch:=$(shell git branch | sed -n -r -e "s/^\* (.+)$$/\1/p")
+$(info current git branch = $(current-git-branch))
+
+global.gitconfig: FORCE
+	$(eval tmp-git-config:=$(shell mktemp))
+	-git config -l --global >$(tmp-git-config)
+	touch $@
+	cat $@ >> $(tmp-git-config)
+	sort -u $(tmp-git-config) | tee $@
+
+system.gitconfig: FORCE
+	$(eval tmp-git-config:=$(shell mktemp))
+	-git config -l --system>$(tmp-git-config)
+	touch $@
+	cat $@ >> $(tmp-git-config)
+	sort -u $(tmp-git-config) | tee $@
+
+local.gitconfig: FORCE
+	$(eval tmp-git-config:=$(shell mktemp))
+	-git config -l --local>$(tmp-git-config)
+	touch $@
+	cat $@ >> $(tmp-git-config)
+	sort -u $(tmp-git-config) | tee $@
+
+.PHONY: FORCE
+FORCE:
 
 endif # git-included
 
