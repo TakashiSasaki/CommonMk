@@ -24,8 +24,9 @@ endef
 
 .PHONY: check-random-file
 check-random-file:
-	$(info target check-random-file)
+	$(info target check-random-file start)
 	$(call check-random-file)	
+	$(info target check-random-file end)
 
 .PHONY: create-random-file
 create-random-file:
