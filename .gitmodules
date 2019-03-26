@@ -1,9 +1,0 @@
-[submodule "suba"]
-	path = suba
-	url = ./suba
-[submodule "subb"]
-	path = subb
-	url = ./subb
-[submodule "subc"]
-	path = subc
-	url = ../subc
