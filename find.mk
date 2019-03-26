@@ -1,12 +1,18 @@
+#!/bin/make -f
 ifndef find-included
-find-included=1
-find-default:cd.files cd.dirs cd.dir drives-c.files drives-c.dirs home.files home.dirs
-
+find-included:=1
 .DELETE_ON_ERROR:
+.DEFAULT_GOAL:=cd.files
+
 .PHONY: find-default
+find-default:
+	@echo No default target on find.mk.
+
+
 SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
-include $(SELF_DIR)clean.mk
-.DEFAULT_GOAL:=find-default
+ifndef clean-included
+  include $(SELF_DIR)clean.mk
+endif
 
 %.prune.tmp: %.prune
 	cat "$(lastword $^)" \
@@ -35,7 +41,7 @@ cd.dirs:
 	find . -type d | sed -n -r 's/^.\/(.+)$$/\1/p' >$@
 	head $@; tail $@
 
-cd.files: 
+cd.files: FORCE 
 	find . -type f | sed -n -r 's/^.\/(.+)$$/\1/p' >$@
 	head $@; tail $@
 
@@ -64,6 +70,8 @@ drives-c.prune:
 	echo "*/ElevatedDiagnostics" >>$@
 	echo "*/sshd" >>$@
 	echo "*/Takashi SASAKI" >>$@
+
+FORCE:
 
 endif # find-included
 
