@@ -1,16 +1,17 @@
+#!/bin/make -f 
 ifndef updatedb-included
-updatedb-included=1
+updatedb-included:=1
 
-.PHONY: updatedb-default
 .SUFFIXES: .slocate .locate02 .locate-sorted .locate-bigrams .locate-old
 .DELETE_ON_ERROR:
 
-updatedb-default: home.locate02 
-	locate -d $< / | head -n 5
+.PHONY: updatedb-default
+updatedb-default: cd.locate02 
+	#locate -d $< / | head -n 5
 
 SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 ifndef find-included
-include $(SELF_DIR)find.mk
+  include $(SELF_DIR)find.mk
 endif
 
 #home.files:
