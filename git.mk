@@ -1,4 +1,4 @@
-#!/bin/make -f 
+#!/bin/make -f
 ifndef git-included
 git-included:=1
 
@@ -6,8 +6,11 @@ ifdef GIT_DIR
 $(error Environment variable GIT_DIR may cause unexpected result.)
 endif
 
-current-git-branch:=$(shell git branch | sed -n -r -e "s/^\* (.+)$$/\1/p")
-$(info current git branch = $(current-git-branch))
+current-git-repo-branch:=$(shell git branch | sed -n -r -e "s/^\* (.+)$$/\1/p")
+$(info current-git-repo-branch = $(current-git-repo-branch))
+
+current-git-repo-toplevel:=$(shell git rev-parse --show-toplevel)
+$(info current-git-repo-toplevel = $(current-git-repo-toplevel))
 
 .DEFAULT_GOAL=git-default
 .PHONY: git-default
