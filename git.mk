@@ -60,21 +60,25 @@ global.gitconfig: FORCE
 	-git config -l --global >$(tmp-git-config)
 	touch $@
 	cat $@ >> $(tmp-git-config)
-	sort -u $(tmp-git-config) | tee $@
+	sort -u $(tmp-git-config) >$@
 
 system.gitconfig: FORCE
 	$(eval tmp-git-config:=$(shell mktemp))
 	-git config -l --system>$(tmp-git-config)
 	touch $@
 	cat $@ >> $(tmp-git-config)
-	sort -u $(tmp-git-config) | tee $@
+	sort -u $(tmp-git-config) >$@
 
 local.gitconfig: FORCE
 	$(eval tmp-git-config:=$(shell mktemp))
 	-git config -l --local>$(tmp-git-config)
 	touch $@
 	cat $@ >> $(tmp-git-config)
-	sort -u $(tmp-git-config) | tee $@
+	sort -u $(tmp-git-config) >$@
+
+all.gitconfig: global.gitconfig system.gitconfig local.gitconfig
+	cat $^ | sort -u >$@
+	
 
 .PHONY: FORCE
 FORCE:

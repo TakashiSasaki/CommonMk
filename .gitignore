@@ -27,6 +27,7 @@ all-vhd.cygpaths.utf8
 all-vhd.winpaths
 all-vhd.winpaths.d/
 all-vhd.winpaths.utf8
+all.gitconfig
 all.githash
 cd.dir
 cd.dirs
