@@ -76,6 +76,8 @@ icacls.help.utf8
 icacls.sjis
 icacls.txt
 icacls.utf8
+id_rsa.everything
+id_rsa.txt
 list-all-disk.diskpart
 list-all-disk.diskpart.runas.stdout
 list-all-disk.diskpart.utf8
