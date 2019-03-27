@@ -2,6 +2,9 @@
 ifndef git-included
 git-included:=1
 
+.PHONY: git-default
+git-default: all.gitconfig
+
 ifdef GIT_DIR
 $(error Environment variable GIT_DIR may cause unexpected result.)
 endif
@@ -12,10 +15,7 @@ $(info current-git-repo-branch = $(current-git-repo-branch))
 current-git-repo-toplevel:=$(shell git rev-parse --show-toplevel)
 $(info current-git-repo-toplevel = $(current-git-repo-toplevel))
 
-.DEFAULT_GOAL=git-default
-.PHONY: git-default
-git-default:
-	@echo No default target
+.DEFAULT_GOAL:=git-default
 
 all.githash:
 	git rev-parse --all | sort -u | tee $@
