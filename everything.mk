@@ -6,14 +6,18 @@ everything-included:=1
 # recipies for utilize Everything Search Engine, a 'locate' tool for Windows environment.
 #
 
-.DEFAULT_GOAL:=id_rsa.everything
+.DEFAULT_GOAL:=everything-default
 
 .PHONY: everything-default
-everything-default: id_rsa.everything
+everything-default: id_rsa.everything sshdir.everything
 	@echo No default target in everything.mk.
 
 id_rsa.txt: FORCE
-	echo "id_rsa" >$@
+	@echo "id_rsa" >$@
+
+sshdir.txt: FORCE
+	@echo ".ssh" >$@
+	@echo "attrib:D" >>$@
 
 # also an example of urlencode by sed
 %.everything: %.txt
@@ -30,7 +34,18 @@ id_rsa.txt: FORCE
 	    -e 's/(/%28/g' \
 	    -e 's/)/%29/g' \
 	    -e 's/:/%3A/g' >$(tmp)
-	curl --user foo:bar --connect-timeout 1 "http://127.1.2.3/?q=`cat $(tmp)`&json=1" >$@
+	$(eval tmp2:=$(shell mktemp))
+	echo http://127.1.2.3/? >>$(tmp2)
+	echo q= >>$(tmp2)
+	cat $(tmp) >>$(tmp2)
+	echo "&json=1" >>$(tmp2)
+	echo "&path=1" >>$(tmp2)
+	echo "&path_column=1" >>$(tmp2)
+	echo "&size_column=1" >>$(tmp2)
+	echo "&date_modified_column=1" >>$(tmp2)
+	echo "&date_created_column=1" >>$(tmp2)
+	echo "&attributes_column=1" >>$(tmp2)
+	curl --user foo:bar --connect-timeout 1 `tr -d '\r\n' <$(tmp2)` >$@
 
 .PHONY: FORCE
 FORCE:

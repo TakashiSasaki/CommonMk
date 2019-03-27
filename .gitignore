@@ -120,6 +120,8 @@ makefile-allinone.txt
 old/
 runas.js
 slocate/
+sshdir.everything
+sshdir.txt
 takeown-help.sjis
 takeown-help.utf8
 takeown-me.sjis
