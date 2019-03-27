@@ -1,63 +1,66 @@
 #!/bin/make -f
 ifndef find-included
 find-included:=1
+
 .DELETE_ON_ERROR:
-.DEFAULT_GOAL:=cd.files
+.DEFAULT_GOAL:=find-default
 
 .PHONY: find-default
-find-default:
-	@echo No default target on find.mk.
-
+find-default: cd.dir cd.file
 
 SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 ifndef clean-included
   include $(SELF_DIR)clean.mk
 endif
+ifndef xargs-included
+  include $(SELF_DIR)xargs.mk
+endif
+
 
 %.prune.tmp: %.prune
-	cat "$(lastword $^)" \
+	cat $< \
 	| sed -n  -r -e '/^.+/i -path "' -e '/^.+/p' -e '/^.+/a " -prune -o ' -e '$$a -print' \
-	| tee $@
+	>$@
 
-%.dirs.tmp: %.dir
-	echo find \"`cat $(firstword $^)`\"\ -type d \ >$@ 
+%.dir.find: %.path
+	$(eval prune-tmp:=$(shell mktemp))
+	if [ -e $(basename $<).prune ]; \
+	then sed -n  -r -e '/^.+/i -path "' -e '/^.+/p' -e '/^.+/a " -prune -o ' -e '$$a -print' \
+	  <$(basename $<).prune \
+	  >$(prune-tmp); \
+	else \
+	  touch $(prune-tmp); \
+	fi;
+	$(eval tmp:=$(shell mktemp))
+	cat $< | $(XARGS) -I {} bash -c \
+	  '(echo find \"{}\" "-type d " >>$(tmp); cat $(prune-tmp) >>$(tmp); echo ";" >>$(tmp)  )'
+	tr -d "\n\r" <$(tmp) >$@
 
-%.files.tmp: %.dir
-	echo find \"`cat $(firstword $^)`\"\ -type f \ >$@ 
+%.file.find: %.path
+	$(eval prune-tmp:=$(shell mktemp))
+	if [ -e $(basename $<).prune ]; \
+	then sed -n  -r -e '/^.+/i -path "' -e '/^.+/p' -e '/^.+/a " -prune -o ' -e '$$a -print' \
+	  <$(basename $<).prune \
+	  >$(prune-tmp); \
+	else \
+	  touch $(prune-tmp); \
+	fi;
+	$(eval tmp:=$(shell mktemp))
+	cat $< | $(XARGS) -I {} bash -c \
+	  '(echo find \"{}\" "-type f " >>$(tmp); cat $(prune-tmp) >>$(tmp); echo ";" >>$(tmp)  )'
+	tr -d "\n\r" <$(tmp) >$@
 
-%.dirs.find: %.dirs.tmp %.prune.tmp
-	cat $^ | tr -d "\n\r" >$@
-
-%.files.find: %.files.tmp %.prune.tmp
-	cat $^ | tr -d "\n\r" >$@
-
-%.dirs: %.dirs.find
+%.dir: %.dir.find
 	time sh $< >$@
 
-%.files: %.files.find
+%.file: %.file.find
 	time sh $< >$@
 
-cd.dirs: 
-	find . -type d | sed -n -r 's/^.\/(.+)$$/\1/p' >$@
-	head $@; tail $@
+cd.path: FORCE
+	pwd >$@
 
-cd.files: FORCE 
-	find . -type f | sed -n -r 's/^.\/(.+)$$/\1/p' >$@
-	head $@; tail $@
-
-cd.dir:
-	pwd | tr -d '\n\r\t' >$@
-	grep '^/' $@ 
-	test -s $@
-
-home.files:
-	find ~ -type f >$@
-
-home.dirs:
-	find ~ -type d >$@
-
-drives-c.dir:
-	echo /drives/c/Users/ >$@
+drives-c.dirs:
+	echo /drives/c >$@
 
 drives-c.prune:
 	-rm $@
@@ -74,5 +77,4 @@ drives-c.prune:
 FORCE:
 
 endif # find-included
-
 

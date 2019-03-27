@@ -1,34 +1,22 @@
+#!/bin/make -f 
 ifndef md5-included
-md5-included=1
-
-.PHONY: md5-default
-md5-default: cd.md5s
+md5-included:=1
 
 SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 include $(SELF_DIR)builtin.mk
 include $(SELF_DIR)xargs.mk
-#include $(SELF_DIR)clean.mk
+include $(SELF_DIR)find.mk
 
-%.md5s: %.files
+.DEFAULT_GOAL:=cd.files.md5
+
+%.path.md5: %.path
 	cat $< | ($(XARGS) -L1 -I{} md5sum {}) >$@
 
-cd.files:
-	find . -type f >$@
+%.files.md5: %.files
+	cat $< | ($(XARGS) -L1 -I{} md5sum {}) >$@
 
-%.ldjson: %.md5s
+%.ldjson: %.files.md5
 	cat $< 	| jq -R -c 'split("  ")|{"md5":.[0],"path":.[1]}' >$@
-
-# It is too complex to recreate *.mk files.
-# 
-# %.mk: %.md5s
-# 	echo ".PHONY: default all" >$@
-# 	echo "default: all" >>$@
-# 	cat $< | sed -n -r -e "s/^([0-9a-f]+)[ ]+(.+)$$/\1 : \2\n\tcp -R $$< $$\@\n\techo -n $$< >$$\@.path\n/p" >>$@
-# 	echo "" >>$@
-# 	echo "all : \\" >>$@
-# 	cat $< | sed -n -r -e "s/^([0-9a-f]+) .+/\t\1\\\/p" >>$@
-# 	echo "" >>$@
-
 
 endif # md5-included
 

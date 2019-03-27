@@ -1,27 +1,48 @@
-#!/bin/make -f 
+#!/bin/make -f
 ifndef updatedb-included
 updatedb-included:=1
 
-.SUFFIXES: .slocate .locate02 .locate-sorted .locate-bigrams .locate-old
-.DELETE_ON_ERROR:
-
 .PHONY: updatedb-default
-updatedb-default: cd.locate02 
-	#locate -d $< / | head -n 5
+updatedb-default:
+	@echo No default target in updatedb.mk
 
 SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 ifndef find-included
+  $(info including $(SERLF_DIR)find.mk)
   include $(SELF_DIR)find.mk
 endif
 
-#home.files:
-#	find ~ -type f >$@
+.SUFFIXES: .slocate .locate02 .locate-sorted .locate-bigrams .locate-old
+.DELETE_ON_ERROR:
+.DEFAULT_GOAL:=updatedb-test
 
-FRCODE=/usr/libexec/frcode
-BIGRAM=/usr/libexec/bigram
-CODE=/usr/libexec/code
-UPDATEDB=/usr/bin/updatedb
+.PHONY: updatedb-test
+updatedb-test: cd.locate02
 
+cd.locate02: FORCE
+
+.PHONY:
+FORCE:
+
+FRCODE:=$(shell which frcode)
+FRCODE:=$(if $(FRCODE),$(FRCODE),$(wildcard /usr/libexec/frcode*))
+FRCODE:=$(if $(FRCODE),$(FRCODE),/usr/libexec/frcode)
+$(info FRCODE=$(FRCODE))
+
+BIGRAM:=$(shell which bigram)
+BIGRAM:=$(if $(BIGRAM),$(BIGRAM),$(wildcard /usr/libexec/bigram*))
+BIGRAM:=$(if $(BIGRAM),$(BIGRAM),/usr/libexec/bigram)
+$(info BIGRAM=$(BIGRAM))
+
+CODE:=$(shell which code)
+CODE:=$(if $(CODE),$(CODE),$(wildcard /usr/libexec/code*))
+CODE:=$(if $(CODE),$(CODE),/usr/libexec/code)
+$(info CODE=$(CODE))
+
+UPDATEDB:=$(shell which updatedb)
+UPDATEDB:=$(if $(UPDATEDB),$(UPDATEDB),$(wildcard /usr/bin/updatedb*))
+UPDATEDB:=$(if $(UPDATEDB),$(UPDATEDB),/usr/bin/updatedb)
+$(info UPDATEDB=$(UPDATEDB))
 
 %.slocate: %.files
 	cat $< | tr '\n' '\0' | sort -z -f | ${FRCODE} -0 -S 1 > $@
@@ -41,6 +62,13 @@ UPDATEDB=/usr/bin/updatedb
 
 %.locate-old: %.locate-bigrams %.locate-sorted
 	cat $(lastword $^) | ${CODE} $(firstword $^) > $@
+	test -s $@
+
+%.githash: %.paths
+	cat $< | xargs -n 1 git hash-object 2>&1| tee $@
+
+%.frcode: %.urls
+	cat $< | sort | uniq | ${FRCODE} >$@
 	test -s $@
 
 endif # updatedb-included

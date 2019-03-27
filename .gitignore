@@ -31,8 +31,12 @@ all.gitconfig
 all.githash
 cd.dir
 cd.dirs
+cd.file
 cd.files
+cd.files.md5
+cd.locate02
 cd.md5s
+cd.path
 cd.winpath
 cd.winpath.escaped
 cd.winpath.sjis
@@ -74,6 +78,8 @@ icacls.help.utf8
 icacls.sjis
 icacls.txt
 icacls.utf8
+id_rsa.everything
+id_rsa.txt
 list-all-disk.diskpart
 list-all-disk.diskpart.runas.stdout
 list-all-disk.diskpart.utf8
@@ -117,6 +123,8 @@ makefile-allinone.txt
 old/
 runas.js
 slocate/
+sshdir.everything
+sshdir.txt
 system.gitconfig
 takeown-help.sjis
 takeown-help.utf8
