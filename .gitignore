@@ -30,10 +30,12 @@ all-vhd.winpaths.utf8
 all.githash
 cd.dir
 cd.dirs
+cd.file
 cd.files
 cd.files.md5
 cd.locate02
 cd.md5s
+cd.path
 cd.winpath
 cd.winpath.escaped
 cd.winpath.sjis
